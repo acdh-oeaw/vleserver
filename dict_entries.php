@@ -45,10 +45,10 @@ header("Content-Type: text/txt; charset=utf-8");
             if ($acttype == 'ndx') {
                //echo "aaa";
                mysql_select_db($database);
+               $entrytype = $_GET['entrytype'];
                $xpath = $_GET['xpath'];
-               if (strlen($xpath) > 0) {
-                  $xpath = " and t1.xpath like '%$xpath%' ";
-               }
+               if (strlen($xpath) > 0) { $xpath = " and t1.xpath like '%$xpath%' "; }
+               if (strlen($entrytype) > 0 ) { $entrytype = " and t2.type = \"$entrytype\""; }
                $query = $_GET['q'];
                $query = str_replace("*", "%", $query);
                $l = strlen(strstr($query, '%'));
@@ -59,7 +59,7 @@ header("Content-Type: text/txt; charset=utf-8");
                }
                
                $tblndx = $tablename.'_ndx';
-               $query2 = "select distinct(t1.id),t2.sid,t2.lemma from $tblndx as t1,$tablename as t2 where t1.txt $operator '$query' $xpath and t1.id = t2.id " ;
+               $query2 = "select distinct(t1.id),t2.sid,t2.lemma from $tblndx as t1,$tablename as t2 where t1.txt $operator '$query' $xpath and t1.id = t2.id $entrytype" ;
                //echo "$query2";
                $result = mysql_query($query2);
                //echo "$result";
@@ -73,7 +73,7 @@ header("Content-Type: text/txt; charset=utf-8");
                }
 
                
-               echo "$sout";
+               echo "query:$query2\r\n$sout";
                
             } else {
                $sid = $_GET['sid'];

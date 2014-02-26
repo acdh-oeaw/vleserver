@@ -22,6 +22,10 @@
          $tablename = $_GET['tablename'];
          $query2 = "DELETE FROM $tablename WHERE id=$id";
          $result = mysql_query($query2);
+
+         $tablename = "$tablename".'_ndx';
+         $query2 = "DELETE FROM $tablename WHERE id=$id";
+         $result = mysql_query($query2);
       }
    }
    

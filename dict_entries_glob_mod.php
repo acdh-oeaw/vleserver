@@ -1,6 +1,6 @@
 <?php
-   $username = "root";
-   $password = "alf1layla";
+   $username = "phpuser";
+   $password = "#phpUS3R#";
    $database = "dicts_ch";
    $tablename = "frs_017";
    $sh = '';

@@ -3,15 +3,17 @@
    $method = $_SERVER['REQUEST_METHOD'];
    $err = 0;
    $username = "phpuser";
-   $password = "#phpUS3R#";
+#   $password = "#phpUS3R#";
+   $password = 'IWGQdQCYMTojckOcdL5B1A=';
    $database = "dicts_ch";
+   $db_host = "192.168.0.6";
    $sh = '';
    
    //echo $method;
          
    
    if ($method == 'DELETE') {
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       echo $tablename;
       if (!$link) {
          $err = 1;
@@ -35,7 +37,7 @@
    //** UPDATE RECORD *********************************************
    //**************************************************************
    if ($method == 'PUT') {
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       if (!$link) {
          $err = 1;
          echo "Can\'t connect to DB";
@@ -127,7 +129,7 @@
    
    if ($method == 'GET') {
       $text = '';
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       if (!$link) {
          $err = 1;
          echo "Can\'t connect to DB";
@@ -227,7 +229,7 @@
    //** INSERT NEW RECORD *****************************************
    //**************************************************************
    if ($method == 'POST') { 
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       if (!$link) {
          $err = 1;
          echo "Can\'t connect to DB";

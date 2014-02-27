@@ -3,7 +3,9 @@ header("Content-Type: text/txt; charset=utf-8");
    $method = $_SERVER['REQUEST_METHOD'];
    $err = 0;
    $username = "phpuser";
-   $password = "#phpUS3R#";
+#   $password = "#phpUS3R#";
+   $password = 'IWGQdQCYMTojckOcdL5B1A=';
+   $db_host = "192.168.0.6";
    $database = "dicts_ch";
    $sh = '';
    
@@ -14,7 +16,7 @@ header("Content-Type: text/txt; charset=utf-8");
    //*** METHOD: GET*************************************************
    //****************************************************************
    if ($method == 'GET') {
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       if (!$link) {
          $err = 1;
          echo "Can\'t connect to DB";
@@ -179,7 +181,7 @@ header("Content-Type: text/txt; charset=utf-8");
    }
    
    if ($method == 'POST') {
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       if (!$link) {
          $err = 1;
          echo "Can\'t connect to DB";

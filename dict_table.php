@@ -2,7 +2,9 @@
    $method = $_SERVER['REQUEST_METHOD'];
    $err = 0;
    $username = "phpuser";
-   $password = "#phpUS3R#";
+#   $password = "#phpUS3R#";
+   $password = 'IWGQdQCYMTojckOcdL5B1A=';
+   $db_host = "192.168.0.6";
    $database = "dicts_ch";
    $tablename = $_GET['tablename'];
    $type = $_GET['type'];
@@ -10,7 +12,7 @@
    //echo $method;
    
    if ($method == 'DELETE') {
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       echo $tablename;
       if (!$link) {
          $err = 1;
@@ -53,7 +55,7 @@
    
    if ($method == 'GET') { 
       $acttype = $_GET['acttype'];
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       
       switch ($acttype) {
          case 'copyTable':
@@ -166,7 +168,7 @@
    }
    
    if ($method == 'PUT') { //NEW
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
 
       if (!$link) {
          $err = 1;

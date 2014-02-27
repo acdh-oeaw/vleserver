@@ -2,15 +2,16 @@
    $method = $_SERVER['REQUEST_METHOD'];
    $err = 0;
    $username = "phpuser";
-   $password = "#phpUS3R#";
+#   $password = "#phpUS3R#";
+   $password = 'IWGQdQCYMTojckOcdL5B1A=';
+   $db_host = "192.168.0.6";
    $database = "dicts_ch";
-   $tablename = $_GET['name'];
    $queryType = $_GET['queryType'];
    $user = $_GET['user'];
    $pw = $_GET['pw'];
    
    if ($method == 'GET') {
-      $link = mysql_connect('', $username, $password);
+      $link = mysql_connect($db_host, $username, $password);
       if (!$link) {
          $err = 1;
          echo "Can\'t connect to DB";

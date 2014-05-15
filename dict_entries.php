@@ -3,10 +3,9 @@ header("Content-Type: text/txt; charset=utf-8");
    $method = $_SERVER['REQUEST_METHOD'];
    $err = 0;
    $username = "phpuser";
-   #$password = "#phpUS3R#";
+#   $password = "#phpUS3R#";
    $password = 'IWGQdQCYMTojckOcdL5B1A=';
-   $db_host = "192.168.0.6";
-#  $db_host = "localhost";
+   $db_host = ""; # "" = use socket
    $database = "dicts_ch";
    $sh = '';
    
@@ -17,18 +16,18 @@ header("Content-Type: text/txt; charset=utf-8");
    //*** METHOD: GET*************************************************
    //****************************************************************
    if ($method == 'GET') {
-      $link = mysql_connect($db_host, $username, $password);      
+      $link = mysql_connect($db_host, $username, $password);
       if (!$link) {
          $err = 1;
          echo "Can\'t connect to DB";
       }
       
       if ($err == 0) { //is connected
-      	
-      	// We have to tell mysql the client's encoding. 
+
+	// We have to tell mysql the client's encoding. 
       	// http://stackoverflow.com/questions/2943943/utf-8-mysql-and-charset
-      	$set_client_encoding = mysql_query("SET NAMES utf8"); //mysql_set_charset("utf8")
-      
+      	$set_client_encoding = mysql_query("SET NAMES utf8"); //or  mysql_set_charset("utf8")
+
          $perm_granted = false;
          $query = $_GET['q'];
          $tablename = $_GET['tablename'];

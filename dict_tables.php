@@ -4,7 +4,7 @@
    $username = "phpuser";
 #   $password = "#phpUS3R#";
    $password = 'IWGQdQCYMTojckOcdL5B1A=';
-   $db_host = "192.168.0.6";
+   $db_host =  ""; # "" = use socket
    $database = "dicts_ch";
    $queryType = $_GET['queryType'];
    $user = $_GET['user'];

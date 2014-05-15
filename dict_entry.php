@@ -6,7 +6,7 @@
 #   $password = "#phpUS3R#";
    $password = 'IWGQdQCYMTojckOcdL5B1A=';
    $database = "dicts_ch";
-   $db_host = "192.168.0.6";
+   $db_host =  ""; # "" = use socket
    $sh = '';
    
    //echo $method;

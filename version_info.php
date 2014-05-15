@@ -1,4 +1,4 @@
-﻿<?php
+<?php
    $progname = $_GET['prog'];
    
    if ($progname == 'vle') {

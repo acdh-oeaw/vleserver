@@ -1,10 +1,13 @@
 <?php
+  if (function_exists('xdebug_start_error_collection')) {
+    xdebug_start_error_collection();
+  }
 header("Content-Type: text/txt; charset=utf-8");
    $method = $_SERVER['REQUEST_METHOD'];
    $err = 0;
-   $username = "phpuser";
+   $username = "dicts_ch";
 #   $password = "#phpUS3R#";
-   $password = 'IWGQdQCYMTojckOcdL5B1A=';
+   $password = 'VGxwZUqHG4vHyeGb';
    $db_host = ""; # "" = use socket
    $database = "dicts_ch";
    $sh = '';

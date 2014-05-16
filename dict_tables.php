@@ -1,9 +1,12 @@
 <?php
+  if (function_exists('xdebug_start_error_collection')) {
+    xdebug_start_error_collection();
+  }
    $method = $_SERVER['REQUEST_METHOD'];
    $err = 0;
-   $username = "phpuser";
+   $username = "dicts_ch";
 #   $password = "#phpUS3R#";
-   $password = 'IWGQdQCYMTojckOcdL5B1A=';
+   $password = 'VGxwZUqHG4vHyeGb';
    $db_host =  ""; # "" = use socket
    $database = "dicts_ch";
    $queryType = $_GET['queryType'];

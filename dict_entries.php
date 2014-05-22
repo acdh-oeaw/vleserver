@@ -2,7 +2,7 @@
   if (function_exists('xdebug_start_error_collection')) {
     xdebug_start_error_collection();
   }
-header("Content-Type: text/txt; charset=utf-8");
+header("Content-Type: text/html; charset=utf-8");
    $method = $_SERVER['REQUEST_METHOD'];
    $err = 0;
    $username = "dicts_ch";
@@ -47,8 +47,8 @@ header("Content-Type: text/txt; charset=utf-8");
          $result = mysql_query($query4);
          $num = mysql_numrows($result);
          if ($num == 1) {
-            $rd = utf8_decode(mysql_result($result, 0, 0));
-            $wr = utf8_decode(mysql_result($result, 0, 1));
+            $rd = mysql_result($result, 0, 0);
+            $wr = mysql_result($result, 0, 1);
             if ($rd == 'y') {
                if ($wr == 'y') {
                   $perm_granted = true;
@@ -106,7 +106,7 @@ header("Content-Type: text/txt; charset=utf-8");
                         $id = mysql_result($result,$i, 0);
                         $query3 = "select entry from $tablename where id=$id";
                         $result3 = mysql_query($query3);
-                        $text = utf8_decode(mysql_result($result3, 0, 0));
+                        $text = mysql_result($result3, 0, 0);
                         $text = str_replace("y2y", ";", $text);
                         $text = str_replace("y1y", "&#x", $text);
                         //
@@ -134,7 +134,7 @@ header("Content-Type: text/txt; charset=utf-8");
                      //echo "$sh";
                   } else {
                      while ($i < $num) {
-                        $sout = $sout.utf8_decode(mysql_result($result,$i, 0))." ".utf8_decode(mysql_result($result,$i, 1))." ".utf8_decode(mysql_result($result,$i, 2))."\r\n";
+                        $sout = $sout.mysql_result($result,$i, 0)." ".mysql_result($result,$i, 1)." ".mysql_result($result,$i, 2)."\r\n";
                         $i++;
                      }
                      echo "query: $query2\r\n$sout";
@@ -183,7 +183,7 @@ header("Content-Type: text/txt; charset=utf-8");
          
                   $sout = '';
                   while ($i < $num) {
-                     $sout = $sout.utf8_decode(mysql_result($result,$i, 0))." ".utf8_decode(mysql_result($result,$i, 1))." ".utf8_decode(mysql_result($result,$i, 2))."\r\n";
+                     $sout = $sout.mysql_result($result,$i, 0)." ".mysql_result($result,$i, 1)." ".mysql_result($result,$i, 2)."\r\n";
                      $i++;
                   } //while
 

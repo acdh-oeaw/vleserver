@@ -47,8 +47,8 @@ header("Content-Type: text/txt; charset=utf-8");
          $result = mysql_query($query4);
          $num = mysql_numrows($result);
          if ($num == 1) {
-            $rd = mysql_result($result, 0, 0);
-            $wr = mysql_result($result, 0, 1);
+            $rd = utf8_decode(mysql_result($result, 0, 0));
+            $wr = utf8_decode(mysql_result($result, 0, 1));
             if ($rd == 'y') {
                if ($wr == 'y') {
                   $perm_granted = true;
@@ -106,7 +106,7 @@ header("Content-Type: text/txt; charset=utf-8");
                         $id = mysql_result($result,$i, 0);
                         $query3 = "select entry from $tablename where id=$id";
                         $result3 = mysql_query($query3);
-                        $text = mysql_result($result3, 0, 0);
+                        $text = utf8_decode(mysql_result($result3, 0, 0));
                         $text = str_replace("y2y", ";", $text);
                         $text = str_replace("y1y", "&#x", $text);
                         //
@@ -134,7 +134,7 @@ header("Content-Type: text/txt; charset=utf-8");
                      //echo "$sh";
                   } else {
                      while ($i < $num) {
-                        $sout = $sout.mysql_result($result,$i, 0)." ".mysql_result($result,$i, 1)." ".mysql_result($result,$i, 2)."\r\n";
+                        $sout = $sout.utf8_decode(mysql_result($result,$i, 0))." ".utf8_decode(mysql_result($result,$i, 1))." ".utf8_decode(mysql_result($result,$i, 2))."\r\n";
                         $i++;
                      }
                      echo "query: $query2\r\n$sout";
@@ -144,24 +144,24 @@ header("Content-Type: text/txt; charset=utf-8");
                   //*****************************************************
                   //** QUERY IN TABLE ***********************************
                   //*****************************************************
-                  $sid = $_GET['sid'];
-                  $id = $_GET['id'];
+                  $sid = mysql_real_escape_string($_GET['sid']);
+                  $id = mysql_real_escape_string($_GET['id']);
                   $type = $_GET['type'];
                      if ($type != 'like') { $type = '='; }
-                  $lem = $_GET['lem'];
+                  $lem = mysql_real_escape_string($_GET['lem']);
                      $lem = str_replace("*", "%", $lem);
                      //$lem = 'a%';
-                  $entrytype = $_GET['entrytype'];
+                  $entrytype = mysql_real_escape_string($_GET['entrytype']);
                   mysql_select_db($database);
             
                   $et = "";
-                  if (strlen($entrytype) > 0 ) { $et = " and type = \"$entrytype\""; }
+                  if (strlen($entrytype) > 0 ) { $et = " AND type = '$entrytype'"; }
             
                   if (strlen($lem) > 0) {
-                     $query2 = "select id,sid,lemma from $tablename where lemma $type \"$lem\" $et " ;
+                     $query2 = "SELECT id,sid,lemma from $tablename WHERE lemma $type '$lem' $et " ;
                   }
                   if (strlen($sid) > 0) {
-                     $query2 = "select id,sid,lemma from $tablename where sid $type \"$sid\" $et " ;
+                     $query2 = "SELECT id,sid,lemma from $tablename WHERE sid $type '$sid' $et " ;
                   }
                   if (strlen($id) > 0) {
                      $sh1 = strstr($id, '-');
@@ -170,10 +170,10 @@ header("Content-Type: text/txt; charset=utf-8");
                         if (count($ar) == 2) {
                            $id = $ar[0];
                            $id1 = $ar[1];
-                           $query2 = "SELECT id,sid,lemma FROM $tablename where id>=$id and id<=$id1" ;
+                           $query2 = "SELECT id,sid,lemma FROM $tablename WHERE id>=$id and id<=$id1" ;
                         }
                      } else {
-                        $query2 = "select id,sid,lemma from $tablename where id $type $id $et " ;
+                        $query2 = "SELECT id,sid,lemma FROM $tablename WHERE id $type $id $et " ;
                      }
                   }
                   //echo "$query2";
@@ -183,7 +183,7 @@ header("Content-Type: text/txt; charset=utf-8");
          
                   $sout = '';
                   while ($i < $num) {
-                     $sout = $sout.mysql_result($result,$i, 0)." ".mysql_result($result,$i, 1)." ".mysql_result($result,$i, 2)."\r\n";
+                     $sout = $sout.utf8_decode(mysql_result($result,$i, 0))." ".utf8_decode(mysql_result($result,$i, 1))." ".utf8_decode(mysql_result($result,$i, 2))."\r\n";
                      $i++;
                   } //while
 

@@ -33,9 +33,9 @@ header("Content-Type: text/txt; charset=utf-8");
 
          $perm_granted = false;
          $query = $_GET['q'];
-         $tablename = $_GET['tablename'];
-         $tableuser = $_GET['tableuser'];
-         $pw = $_GET['pw'];
+         $tablename = mysql_real_escape_string($_GET['tablename']);
+         $tableuser = mysql_real_escape_string($_GET['tableuser']);
+         $pw = mysql_real_escape_string($_GET['pw']);
          $acttype = $_GET['acttype'];
          
          mysql_select_db($database);
@@ -66,25 +66,34 @@ header("Content-Type: text/txt; charset=utf-8");
                   //** QUERY IN _NDX ************************************
                   //*****************************************************
                   //echo "aaa";
-                  $entrytype = $_GET['entrytype'];
-                  $xpath = $_GET['xpath'];
+                  $entrytype = mysql_real_escape_string($_GET['entrytype']);
+                  $xpath = mysql_real_escape_string($_GET['xpath']);
                   $restype = $_GET['restype'];
                   if (strlen($xpath) > 0) { $xpath = " and t1.xpath like '%$xpath%' "; }
-                  if (strlen($entrytype) > 0 ) { $entrytype = " and t2.type = \"$entrytype\""; }
+                  if (strlen($entrytype) > 0 ) { $entrytype = " and t2.type ='$entrytyp'"; }
                   $query = $_GET['q'];
                   $query = str_replace("_y_", "#8#", $query);
                   $query = str_replace("_x_", "#9#", $query);
                   $query = str_replace("*", "%", $query);
+                  $query = mysql_real_escape_string($query);
                   
                   $l = strlen(strstr($query, '%'));
-                  if ($l = 0) {
+                  if ($l === 0) {
                      $operator = '=';
                   } else {
-                     $operator = 'like';
+                     $operator = 'LIKE';
                   }
                   
-                  $tblndx = $tablename.'_ndx';
-                  $query2 = "select distinct(t1.id),t2.sid,t2.lemma from $tblndx as t1,$tablename as t2 where t1.txt $operator '$query' $xpath and t1.id = t2.id $entrytype" ;
+                  $ndxTable = $tablename.'_ndx';
+                  
+                  if (isset($_GET['key'])) {
+                    $key = mysql_real_escape_string($_GET['key']);
+                    $tblndx = "(SELECT `id` , `xpath` , CONVERT( AES_DECRYPT( UNHEX( `txt` ) , '$key' ) USING utf8 ) AS 'txt' FROM $ndxTable)";  
+                  } else {
+                    $tblndx = "$ndxTable";
+                  }
+                  
+                  $query2 = "SELECT DISTINCT(t1.id),t2.sid,t2.lemma FROM $tblndx AS t1, $tablename AS t2 WHERE t1.txt $operator '$query' $xpath AND t1.id = t2.id $entrytype" ;
                   //echo "$query2";
                   $result = mysql_query($query2);
                   //echo "$result";
@@ -194,13 +203,13 @@ header("Content-Type: text/txt; charset=utf-8");
          $err = 1;
          echo "Can\'t connect to DB";
       }
-      $tablename = $_POST['tablename'];
-      $entry = trim($_POST['entry']);
-      $lemfn = $_POST['lemfn'];
-      $sid = $_POST['sid'];
-      $lemma = $_POST['lem'];
-      $tradu = $_POST['tradu'];
-      $ilen = strlen($entry);
+      $tablename = mysql_real_escape_string($_POST['tablename']);
+      $entry = mysql_real_escape_string(trim($_POST['entry']));
+      $lemfn = mysql_real_escape_string($_POST['lemfn']);
+      $sid = mysql_real_escape_string($_POST['sid']);
+      $lemma = mysql_real_escape_string($_POST['lem']);
+      $tradu = mysql_real_escape_string($_POST['tradu']);
+      $ilen = strlen($entry); // note the mysql encoding!
       if ($err == 0) { 
          mysql_select_db($database);
          $query2 = "INSERT INTO $tablename(sid, lemma, entry, tradu) values('$sid', '$lemma', '$entry', '$tradu')" ;

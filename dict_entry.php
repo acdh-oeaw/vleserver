@@ -13,15 +13,21 @@
    $sh = '';
    
    //echo $method;
-         
-   
+    $link = mysql_connect($db_host, $username, $password);
+    if ($link === FALSE) {
+        $err = 1;
+        echo "Can't connect to DB";
+    } else {
+        mysql_set_charset('utf8', $link);
+        mysql_query("SET character_set_results = 'utf8',"
+                . " character_set_client = 'utf8',"
+                . " character_set_connection = 'utf8',"
+                . " character_set_database = 'utf8',"
+                . " character_set_server = 'utf8'", $link);
+    }
    if ($method == 'DELETE') {
-      $link = mysql_connect($db_host, $username, $password);
       echo $tablename;
-      if (!$link) {
-         $err = 1;
-         echo "Can\'t connect to DB";
-      }
+
       if ($err == 0) { 
         mysql_select_db($database);
         $id = mysql_real_escape_string($_GET['id']);;
@@ -69,8 +75,8 @@
 //-- Tabellenstruktur für Tabelle `arz_eng_006_cow`
 //--
 //
-//DROP TABLE IF EXISTS `arz_eng_006_cow`;
-//CREATE TABLE IF NOT EXISTS `arz_eng_006_cow` (
+//DROP TABLE IF EXISTS `_cow`;
+//CREATE TABLE IF NOT EXISTS `_cow` (
 //  `entry_before` mediumtext NOT NULL,
 //  `user` varchar(255) NOT NULL,
 //  `at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -79,14 +85,9 @@
 //  `sid` varchar(255) NOT NULL,
 //  `lemma` varchar(255) NOT NULL,
 //  PRIMARY KEY (`key`)
-//) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+//) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=0 ;
 
    if ($method == 'PUT') {
-      $link = mysql_connect($db_host, $username, $password);
-      if (!$link) {
-         $err = 1;
-         echo "Can\'t connect to DB";
-      }
       
       if ($err == 0) { 
          mysql_select_db($database);
@@ -194,11 +195,6 @@
    
    if ($method == 'GET') {
       $text = '';
-      $link = mysql_connect($db_host, $username, $password);
-      if (!$link) {
-         $err = 1;
-         echo "Can\'t connect to DB";
-      }
       if ($err == 0) { 
          mysql_select_db($database);
          $ok = false;
@@ -294,11 +290,6 @@
    //** INSERT NEW RECORD *****************************************
    //**************************************************************
    if ($method == 'POST') { 
-      $link = mysql_connect($db_host, $username, $password);
-      if (!$link) {
-         $err = 1;
-         echo "Can\'t connect to DB";
-      }
       $tablename = mysql_real_escape_string($_POST['tablename']);
       $entry = trim($_POST['entry']);
       $stype = $_POST['type'];
@@ -352,4 +343,3 @@
       }
    
    }
-  ?>

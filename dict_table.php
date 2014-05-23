@@ -13,14 +13,21 @@
    $type = $_GET['type'];
    $userID = $_GET['tableuser'];
    //echo $method;
-   
+
+    $link = mysql_connect($db_host, $username, $password);
+    if ($link === FALSE) {
+        $err = 1;
+        echo "Can't connect to DB";
+    } else {
+        mysql_set_charset('utf8', $link);
+        mysql_query("SET character_set_results = 'utf8',"
+                . " character_set_client = 'utf8',"
+                . " character_set_connection = 'utf8',"
+                . " character_set_database = 'utf8',"
+                . " character_set_server = 'utf8'", $link);
+    }
+    
    if ($method == 'DELETE') {
-      $link = mysql_connect($db_host, $username, $password);
-      echo $tablename;
-      if (!$link) {
-         $err = 1;
-         echo "Can\'t connect to DB";
-      }
       if ($err == 0) { 
          
          mysql_select_db($database);
@@ -58,7 +65,6 @@
    
    if ($method == 'GET') { 
       $acttype = $_GET['acttype'];
-      $link = mysql_connect($db_host, $username, $password);
       
       switch ($acttype) {
          case 'copyTable':
@@ -171,12 +177,6 @@
    }
    
    if ($method == 'PUT') { //NEW
-      $link = mysql_connect($db_host, $username, $password);
-
-      if (!$link) {
-         $err = 1;
-         echo "Can\'t connect to DB";
-      }
       
       if ($err == 0) { 
          mysql_select_db($database);
@@ -261,4 +261,3 @@
       } //if err == 0
    
    } //if emthod == PUT
-  ?>

@@ -13,17 +13,23 @@ header("Content-Type: text/html; charset=utf-8");
    $sh = '';
    
    //echo $method;
-         
+    $link = mysql_connect($db_host, $username, $password);
+    if ($link === FALSE) {
+        $err = 1;
+        echo "Can't connect to DB";
+    } else {
+        mysql_set_charset('utf8', $link);
+        mysql_query("SET character_set_results = 'utf8',"
+                . " character_set_client = 'utf8',"
+                . " character_set_connection = 'utf8',"
+                . " character_set_database = 'utf8',"
+                . " character_set_server = 'utf8'", $link);
+    }     
    
    //****************************************************************
    //*** METHOD: GET*************************************************
    //****************************************************************
    if ($method == 'GET') {
-      $link = mysql_connect($db_host, $username, $password);
-      if (!$link) {
-         $err = 1;
-         echo "Can\'t connect to DB";
-      }
       
       if ($err == 0) { //is connected
 
@@ -198,11 +204,6 @@ header("Content-Type: text/html; charset=utf-8");
    }
    
    if ($method == 'POST') {
-      $link = mysql_connect($db_host, $username, $password);
-      if (!$link) {
-         $err = 1;
-         echo "Can\'t connect to DB";
-      }
       $tablename = mysql_real_escape_string($_POST['tablename']);
       $entry = mysql_real_escape_string(trim($_POST['entry']));
       $lemfn = mysql_real_escape_string($_POST['lemfn']);

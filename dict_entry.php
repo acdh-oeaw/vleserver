@@ -45,8 +45,6 @@ if ($method == 'DELETE') {
         $oldentry = mysql_real_escape_string($first_row['entry']);
         $oldsid = mysql_real_escape_string($first_row['sid']);
         $oldlemma = mysql_real_escape_string($first_row['lemma']);
-        $cowtable = $tablename . '_cow';
-        $cowquery = "INSERT INTO $cowtable (user, id, entry_before, sid, lemma) VALUES ('$user', '$id', '$oldentry', '$oldsid', '$oldlemma')";
 
         $query2 = "DELETE FROM $tablename WHERE id=$id";
 
@@ -69,25 +67,6 @@ if ($method == 'DELETE') {
         $result = mysql_query($query2);
     }
 }
-
-//**************************************************************
-//** UPDATE RECORD *********************************************
-//**************************************************************
-//--
-//-- Tabellenstruktur für Tabelle `arz_eng_006_cow`
-//--
-//
-//DROP TABLE IF EXISTS `_cow`;
-//CREATE TABLE IF NOT EXISTS `_cow` (
-//  `entry_before` mediumtext NOT NULL,
-//  `user` varchar(255) NOT NULL,
-//  `at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-//  `key` int(11) NOT NULL AUTO_INCREMENT,
-//  `id` int(11) NOT NULL,
-//  `sid` varchar(255) NOT NULL,
-//  `lemma` varchar(255) NOT NULL,
-//  PRIMARY KEY (`key`)
-//) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=0 ;
 
 if ($method == 'PUT') {
 
@@ -170,8 +149,6 @@ if ($method == 'PUT') {
                 $oldentry = mysql_real_escape_string($first_row['entry']);
                 $oldsid = mysql_real_escape_string($first_row['sid']);
                 $oldlemma = mysql_real_escape_string($first_row['lemma']);
-                $cowtable = $tablename . '_cow';
-                $cowquery = "INSERT INTO $cowtable (user, id, entry_before, sid, lemma) VALUES ('$user', '$id', '$oldentry', '$oldsid', '$oldlemma')";
                 $query2 = "UPDATE $tablename SET entry='$stemp'$addstring where id=$id";
 
                 $protFile = "logs/entry_update.txt";

@@ -104,7 +104,7 @@ if ($method == 'GET') {
                         $tblndx = "$ndxTable";
                     }
 
-                    $query2 = "SELECT DISTINCT(t1.id),t2.sid,t2.lemma FROM $tblndx AS t1, $tablename AS t2 WHERE t1.txt $operator '$query' $xpath AND t1.id = t2.id $entrytype";
+                    $query2 = "SELECT DISTINCT(t1.id),t2.sid,t2.lemma FROM $tblndx AS t1, $tablename AS t2 WHERE t1.txt $operator '$query' $xpath AND t1.id = t2.id $entrytype ORDER BY t2.lemma ASC";
                     //echo "$query2";
                     $result = mysql_query($query2);
                     //echo "$result";
@@ -173,10 +173,10 @@ if ($method == 'GET') {
                     }
 
                     if (strlen($lem) > 0) {
-                        $query2 = "SELECT id,sid,lemma from $tablename WHERE lemma $type '$lem' $et ";
+                        $query2 = "SELECT id,sid,lemma from $tablename WHERE lemma $type '$lem' $et ORDER BY lemma ASC ";
                     }
                     if (strlen($sid) > 0) {
-                        $query2 = "SELECT id,sid,lemma from $tablename WHERE sid $type '$sid' $et ";
+                        $query2 = "SELECT id,sid,lemma from $tablename WHERE sid $type '$sid' $et ORDER BY lemma ASC ";
                     }
                     if (strlen($id) > 0) {
                         $sh1 = strstr($id, '-');
@@ -185,10 +185,10 @@ if ($method == 'GET') {
                             if (count($ar) == 2) {
                                 $id = $ar[0];
                                 $id1 = $ar[1];
-                                $query2 = "SELECT id,sid,lemma FROM $tablename WHERE id>=$id and id<=$id1";
+                                $query2 = "SELECT id,sid,lemma FROM $tablename WHERE id>=$id and id<=$id1 ORDER BY lemma ASC ";
                             }
                         } else {
-                            $query2 = "SELECT id,sid,lemma FROM $tablename WHERE id $type $id $et ";
+                            $query2 = "SELECT id,sid,lemma FROM $tablename WHERE id $type $id $et ORDER BY lemma ASC ";
                         }
                     }
                     //echo "$query2";

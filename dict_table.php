@@ -14,10 +14,6 @@ $db_host = ""; # "" = use socket
 $database = "dicts_ch";
 $tablename = mysql_real_escape_string($_GET['tablename']);
 $type = $_GET['type'];
-$userID = mysql_real_escape_string($_GET['userID']);
-if ($userID === '') {
-    $userID = mysql_real_escape_string($_GET['tableuser']);
-}
 
 //echo $method;
 $link = mysql_connect($db_host, $username, $password);
@@ -31,6 +27,11 @@ if ($link === FALSE) {
             . " character_set_connection = 'utf8',"
             . " character_set_database = 'utf8',"
             . " character_set_server = 'utf8'", $link);
+}
+
+$userID = mysql_real_escape_string($_GET['userID'], $link);
+if ($userID === false || $userID === '') {
+    $userID = mysql_real_escape_string($_GET['tableuser'], $link);
 }
 
 if ($method == 'DELETE') {

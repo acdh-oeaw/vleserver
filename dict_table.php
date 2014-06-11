@@ -7,14 +7,17 @@ ini_set('display_errors', false);
 header("Content-Type: text/html; charset=utf-8");
 $method = $_SERVER['REQUEST_METHOD'];
 $err = 0;
-$username = "dicts_ch";
+$username = "dicts-sru-user";
 #   $password = "#phpUS3R#";
-$password = 'VGxwZUqHG4vHyeGb';
+$password = 'n2vTwvPGF7tqZQXZ';
 $db_host = ""; # "" = use socket
 $database = "dicts_ch";
 $tablename = mysql_real_escape_string($_GET['tablename']);
 $type = $_GET['type'];
 $userID = mysql_real_escape_string($_GET['userID']);
+if ($userID === '') {
+    $userID = mysql_real_escape_string($_GET['tableuser']);
+}
 
 //echo $method;
 $link = mysql_connect($db_host, $username, $password);

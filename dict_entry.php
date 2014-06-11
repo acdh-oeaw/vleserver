@@ -7,9 +7,9 @@ ini_set('display_errors', false);
 header("Content-Type: text/html; charset=utf-8");
 $method = $_SERVER['REQUEST_METHOD'];
 $err = 0;
-$username = "dicts_ch";
+$username = "dicts-sru-user";
 #   $password = "#phpUS3R#";
-$password = 'VGxwZUqHG4vHyeGb';
+$password = 'n2vTwvPGF7tqZQXZ';
 $db_host = ""; # "" = use socket
 $database = "dicts_ch";
 $sh = '';

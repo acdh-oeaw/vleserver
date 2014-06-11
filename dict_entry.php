@@ -116,11 +116,12 @@ if ($method == 'PUT') {
             default:
                 $tablename = mysql_real_escape_string($_GET['tablename']);
                 $stype = mysql_real_escape_string($_GET['type']);
-                if (trim($_GET['user']) === '') {
-                    // TODO check write rights for that user or better reimplement everything ...
-                    echo "result: 'failed'\r\nreason: 'no user given'\r\nDid not save";
-                    return;
-                }
+// Old clients don't send a user here, new ones have problems decrypting data.
+//                if (trim($_GET['user']) === '') {
+//                    // TODO check write rights for that user or better reimplement everything ...
+//                    echo "result: 'failed'\r\nreason: 'no user given'\r\nDid not save";
+//                    return;
+//                }
                 $user = mysql_real_escape_string($_GET['user']);
                 if (strlen($sid) > 0) {
                     $sid = ",sid='$sid'";

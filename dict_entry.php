@@ -50,15 +50,9 @@ if ($method == 'DELETE') {
 
         $protFile = "logs/entry_delete.txt";
         $fh = fopen($protFile, 'a');
-        fwrite($fh, $cowquery . "\r\n");
+
         fwrite($fh, $query2 . "\r\n");
         fclose($fh);
-
-        $result = mysql_query($cowquery);
-        if (mysql_affected_rows() !== 1) {
-            echo "result: 'failed'\r\nreason: 'cow failed'\r\nDid not save";
-            return;
-        }
 
         $result = mysql_query($query2);
 
@@ -153,15 +147,9 @@ if ($method == 'PUT') {
 
                 $protFile = "logs/entry_update.txt";
                 $fh = fopen($protFile, 'a');
-                fwrite($fh, $cowquery . "\r\n");
                 fwrite($fh, $query2 . "\r\n");
                 fclose($fh);
 
-                $result = mysql_query($cowquery);
-                if (mysql_affected_rows() !== 1) {
-                    echo "result: 'failed'\r\nreason: 'cow failed'\r\nDid not save";
-                    return;
-                }
                 $warn = "";
                 $wherePos = strrpos($query2, 'where');
                 $idLen = strlen($id);

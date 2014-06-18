@@ -13,8 +13,6 @@ $password = 'n2vTwvPGF7tqZQXZ';
 $db_host = ""; # "" = use socket
 $database = "dicts_ch";
 $queryType = $_GET['queryType'];
-$user = mysql_real_escape_string($_GET['user']);
-$pw = mysql_real_escape_string($_GET['pw']);
 
 //echo $method;
 $link = mysql_connect($db_host, $username, $password);
@@ -29,6 +27,10 @@ if ($link === FALSE) {
             . " character_set_database = 'utf8',"
             . " character_set_server = 'utf8'", $link);
 }
+
+$user = mysql_real_escape_string($_GET['user']);
+$pw = mysql_real_escape_string($_GET['pw']);
+
 if ($method == 'GET') {
     if ($err == 0) {
         if ($queryType == 'profiles') {

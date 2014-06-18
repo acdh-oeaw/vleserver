@@ -12,7 +12,6 @@ $username = "dicts-sru-user";
 $password = 'n2vTwvPGF7tqZQXZ';
 $db_host = ""; # "" = use socket
 $database = "dicts_ch";
-$tablename = mysql_real_escape_string($_GET['tablename']);
 $type = $_GET['type'];
 
 //echo $method;
@@ -28,6 +27,8 @@ if ($link === FALSE) {
             . " character_set_database = 'utf8',"
             . " character_set_server = 'utf8'", $link);
 }
+
+$tablename = mysql_real_escape_string($_GET['tablename']);
 
 $userID = mysql_real_escape_string($_GET['userID'], $link);
 if ($userID === false || $userID === '') {

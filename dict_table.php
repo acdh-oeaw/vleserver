@@ -205,6 +205,7 @@ if ($method == 'PUT') { //NEW
                             "`table` char(255) default NULL," .
                             "`read` char(1) default NULL," .
                             "`write` char(1) default NULL," .
+                            "`writeown` char(1) default NULL," .
                             "PRIMARY KEY  (`id`)," .
                             "KEY `userID_ndx` (`userID`)," .
                             "KEY `pw_ndx` (`pw`)," .

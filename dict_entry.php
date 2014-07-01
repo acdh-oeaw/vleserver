@@ -34,12 +34,6 @@ if ($method == 'DELETE') {
         mysql_select_db($database);
         $id = mysql_real_escape_string($_GET['id']);
         $tablename = mysql_real_escape_string($_GET['tablename']);
-        if (trim($_GET['user']) === '') {
-            // TODO check write rights for that user or better reimplement everything ...
-            echo "result: 'failed'\r\nreason: 'no user given'\r\nDid not save";
-            return;
-        }
-        $user = mysql_real_escape_string($_GET['user']);
 
         $first_row = mysql_fetch_array(mysql_query("SELECT entry, sid, lemma FROM $tablename WHERE id=$id"));
         $oldentry = mysql_real_escape_string($first_row['entry']);
@@ -290,7 +284,7 @@ if ($method == 'POST') {
                     $txt = mysql_real_escape_string($ar[0]);
                     $xpath = mysql_real_escape_string($ar[1]);
                     //$query3 = "INSERT INTO $tablename(id, xpath, txt) values($id, '$ar[0]', '$ar[1]')" ;
-                    $query3 = "INSERT INTO $tablename(id, txt, xpath) values($id, '$txt', '$xpath')";
+                    $query3 = "INSERT INTO $tablename(id, txt, xpath) values('$id', '$txt', '$xpath')";
                     $result = mysql_query($query3);
                     echo "$query3\r\n";
                 }

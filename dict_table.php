@@ -42,7 +42,7 @@ if ($method == 'DELETE') {
 
         switch ($type) {
             case "deleteUser":
-                $query2 = "DELETE FROM `dict_users` where userID = '$userID'";
+                $query2 = "DELETE FROM `dict_users` where `userID` = '$userID' AND `table` = '$tablename'";
                 $result1 = mysql_query($query2);
                 echo "Result: r1($result1)   Deleted $userID";
                 break;

@@ -34,6 +34,13 @@ if ($method == 'DELETE') {
         mysql_select_db($database);
         $id = mysql_real_escape_string($_GET['id']);
         $tablename = mysql_real_escape_string($_GET['tablename']);
+// Old clients don't send a user here, new ones have problems decrypting data.
+//        if (trim($_GET['user']) === '') {
+//            // TODO check write rights for that user or better reimplement everything ...
+//            echo "result: 'failed'\r\nreason: 'no user given'\r\nDid not save";
+//            return;
+//        }
+        $user = mysql_real_escape_string($_GET['user']);
 
         $first_row = mysql_fetch_array(mysql_query("SELECT entry, sid, lemma FROM $tablename WHERE id=$id"));
         $oldentry = mysql_real_escape_string($first_row['entry']);
@@ -79,7 +86,7 @@ if ($method == 'PUT') {
             case "indices":
                 $tablename = $tablename . '_ndx';
                 $fp = fopen('php://input', 'r');
-                $ndxdata = stream_get_contents($fp);
+                $ndxdata = str_replace("\\'", "'", stream_get_contents($fp));
 
                 //DELETE OLD INDEX ITEMS
                 $query2 = "DELETE FROM $tablename WHERE id = $id";
@@ -103,7 +110,7 @@ if ($method == 'PUT') {
             case "append":
                 $tablename = mysql_real_escape_string($_GET['tablename']);;
                 $fp = fopen('php://input', 'r');
-                $stemp = stream_get_contents($fp);
+                $stemp = str_replace("\\'", "'", stream_get_contents($fp));
                 $ilen = strlen($stemp);
                 echo "result: $result\r\nStrlen (received): $ilen\r\n$stype\r\n$query2";
                 break;
@@ -132,7 +139,8 @@ if ($method == 'PUT') {
                 $addstring = $sid . $lem . $stype . $status;
 
                 $fp = fopen('php://input', 'r');
-                $stemp = mysql_real_escape_string(stream_get_contents($fp));
+                // undo a make save strategy that backfires now.
+                $stemp = mysql_real_escape_string(str_replace("\\'", "'", stream_get_contents($fp)));
                 $ilen = strlen($stemp);
                 $first_row = mysql_fetch_array(mysql_query("SELECT entry, sid, lemma FROM $tablename WHERE id=$id"));
                 $oldentry = mysql_real_escape_string($first_row['entry']);
@@ -308,7 +316,7 @@ if ($method == 'POST') {
             $result = mysql_query($query2);
 
             //GET NEW ID
-            $query2 = "SELECT id FROM $tablename where sid=\"$sid\"";
+            $query2 = "SELECT id FROM $tablename WHERE sid=\"$sid\" ORDER BY `id` DESC";
             $result1 = mysql_query($query2);
             $num = mysql_numrows($result1);
             $newid = mysql_result($result1, 0);

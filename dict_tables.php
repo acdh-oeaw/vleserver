@@ -7,11 +7,11 @@ ini_set('display_errors', false);
 header("Content-Type: text/html; charset=utf-8");
 $method = $_SERVER['REQUEST_METHOD'];
 $err = 0;
-$username = "dicts-sru-user";
+$username = "dicts_ch_test";
 #   $password = "#phpUS3R#";
-$password = 'n2vTwvPGF7tqZQXZ';
+$password = 'test';
 $db_host = ""; # "" = use socket
-$database = "dicts_ch";
+$database = "dicts_ch_test";
 $queryType = $_GET['queryType'];
 
 //echo $method;

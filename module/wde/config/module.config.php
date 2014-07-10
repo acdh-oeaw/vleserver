@@ -184,7 +184,7 @@ return array(
     'zf-apigility' => array(
         'db-connected' => array(
             'wde\\V2\\Rest\\Dicts\\DictsResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Dicts\\Controller',
@@ -201,7 +201,7 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Entries\\EntriesResource',
             ),
             'wde\\V2\\Rest\\Users\\UsersResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Users\\Controller',
@@ -247,12 +247,7 @@ return array(
                         'options' => array(),
                     ),
                 ),
-                'validators' => array(
-                    0 => array(
-                        'name' => 'Zend\\Validator\\Digits',
-                        'options' => array(),
-                    ),
-                ),
+                'validators' => array(),
                 'description' => 'The internal ID. When creating a new user this will be filled in automatically.',
                 'allow_empty' => true,
                 'continue_if_empty' => true,

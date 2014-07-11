@@ -135,7 +135,7 @@ class DictsResource extends AbstractResourceListener {
             $table->addColumn(new Column\Varchar('write', 1));
             $table->addColumn(new Column\Varchar('writeown', 1));
             $table->addConstraint(new Constraint\PrimaryKey('id'));
-            $table->addConstraint(new Constraint\UniqueKey(array('userID', 'pw', 'table')));
+            $table->addConstraint(new Constraint\UniqueKey(array('userID', 'table', 'pw')));
             $this->sql->getAdapter()->query(
                     $this->sql->getSqlStringForSqlObject($table),
                     \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);
@@ -174,7 +174,9 @@ class DictsResource extends AbstractResourceListener {
             $table->addColumn(new Column\Text('entry', 255));           
             $table->addConstraint(new Constraint\PrimaryKey('id'));
         }
-        return parent::create($data);
+        return new DictsEntity(array(
+            'name' => $data->name,
+        ));
     }
 }
 

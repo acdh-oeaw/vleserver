@@ -26,6 +26,27 @@ class DictsResource extends AbstractResourceListener {
      */
     private $metadata;
     
+        /**
+     *
+     * @var array 
+     */
+    protected $tablesWithAuth;
+    
+    /**
+     *
+     * @var string 
+     */
+    protected $tableName;
+    /**
+     * @return boolean Whether the user is an admin user.
+     */
+    
+    protected function isAdmin() {
+        return in_array('dict_users', $this->tablesWithAuth) ||
+               (in_array($this->tableName, $this->tablesWithAuth) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->tableName]['writeown'] === false));
+    }
+    
     public function __construct(ServiceLocatorInterface $services, $name, $resourceName) {
         $config            = $services->get('Config');
         $dbConnectedConfig = $config['zf-apigility']['db-connected'][$resourceName];
@@ -140,9 +161,10 @@ class DictsResource extends AbstractResourceListener {
                     $this->sql->getSqlStringForSqlObject($table),
                     \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);
         } else {
-            $tablesWithAuth = array_intersect($allTableNames, 
+            $this->tableName = $data->name;
+            $this->tablesWithAuth = array_intersect($allTableNames, 
                 array_keys($this->getIdentity()->getAuthenticationIdentity()));
-            if (!in_array('dict_users', $tablesWithAuth)) {
+            if (!$this->isAdmin()) {
                 return new ApiProblem(403, 'You are not authorized to create this dictionary');
             }
             $table = new CreateTable($data->name);
@@ -165,14 +187,88 @@ class DictsResource extends AbstractResourceListener {
             //For Oracle and PostgreSQL there is this solution: https://www.apigility.org/documentation/recipes/customizing-table-gateway-with-features
             //(This refers to the SequenceFeature that can extend the TableGateway).
             //This should be extendable to SQL Server 2012+, previous versions don't support sequences.
-            $table->addColumn(new Column\Integer('id', false, null, array('autoincrement' => 'unused')));
-            $table->addColumn(new Column\Varchar('sid', 255));            
-            $table->addColumn(new Column\Varchar('lemma', 255));
-            $table->addColumn(new Column\Varchar('status', 255));
-            $table->addColumn(new Column\Varchar('locked', 255));
-            $table->addColumn(new Column\Varchar('type', 255));
+            $table->addColumn((new Column\Integer('id'))->setOption('autoincrement', 'unused'));
+            $table->addColumn((new Column\Varchar('sid', 255))->setNullable(true));            
+            $table->addColumn((new Column\Varchar('lemma', 255))->setNullable(true));
+            $table->addColumn((new Column\Varchar('status', 255))->setNullable(true));
+            $table->addColumn((new Column\Varchar('locked', 255))->setNullable(true));
+            $table->addColumn((new Column\Varchar('type', 255))->setNullable(true));
             $table->addColumn(new Column\Text('entry', 255));           
             $table->addConstraint(new Constraint\PrimaryKey('id'));
+            // Let's hack. TODO: Replace with doctrines DBAL?
+            $sql = $this->sql->getSqlStringForSqlObject($table) . ' ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=770';
+            // Indices might need some serious rethinking.
+            $sql = substr_replace($sql, ', ' .
+                    'INDEX `'. $data->name .'_c_sid` (`sid`), ' .
+                    'INDEX `'. $data->name .'_c_lemma` (`lemma`), ' .
+                    'INDEX `'. $data->name .'_c_locked` (`locked`), ' .
+                    'INDEX `'. $data->name .'_c_status` (`status`), ' .
+                    'FULLTEXT INDEX `'. $data->name .'_c_entry` (`entry`) ',
+                    strrpos($sql, ')'), 0);
+            
+// What exactly uses _lck?
+//            $lck_table = new CreateTable($data->name . '_lck');
+//            $mysql = "CREATE TABLE IF NOT EXISTS `" . $data->name. "_lck` (" .
+//                            "`id` int(11) NOT NULL auto_increment," .
+//                            "`resp` char(255) default NULL," .
+//                            "`dt` char(255) default NULL," .
+//                            "PRIMARY KEY  (`id`)," .
+//                            "KEY `resp_ndx` (`resp`)," .
+//                            "KEY `dt_ndx` (`resp`)" .
+//                            ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=770";
+//            $lck_table->addColumn((new Column\Integer('id')));
+            
+            $ndx_table = new CreateTable($data->name . '_ndx');
+//            $mysql = "CREATE TABLE IF NOT EXISTS `" . $data->name . "_ndx` (" .
+//                            "`id` int(11)," .
+//                            "`xpath` char(255) default NULL," .
+//                            "`txt` text," .
+//                            "KEY  (`id`)," .
+//                            "KEY `xpath_ndx` (`xpath`)," .
+//                            "FULLTEXT KEY `txt_ndx` (`txt`)" .
+//                            ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=770";
+            $ndx_table->addColumn((new Column\Integer('id')));
+            $ndx_table->addColumn((new Column\Char('xpath', 255)));
+            $ndx_table->addColumn((new Column\Text('txt')));
+            // Let's hack. TODO: Replace with doctrines DBAL?
+            $ndx_sql = $this->sql->getSqlStringForSqlObject($ndx_table) . ' DEFAULT CHAR SET=utf8';
+            // Indices might need some serious rethinking.
+            $ndx_sql = substr_replace($ndx_sql, ', ' .
+                    'INDEX `'. $data->name .'_ndx_c_id` (`id`), ' .
+                    'INDEX `'. $data->name .'_ndx_c_xpath` (`xpath`), ' .
+                    'INDEX `'. $data->name .'_ndx_c_txt` (`txt`(360)) ',
+                    strrpos($ndx_sql, ')'), 0);
+            
+            $cow_table = new CreateTable($data->name . '_cow');
+//            $mysql = "CREATE TABLE IF NOT EXISTS `_cow` (".
+//  `entry_before` mediumtext NOT NULL,
+//  `user` varchar(255) NOT NULL,
+//  `at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+//  `key` int(11) NOT NULL AUTO_INCREMENT,
+//  `id` int(11) NOT NULL,
+//  `sid` varchar(255) NOT NULL,
+//  `lemma` varchar(255) NOT NULL,
+//  PRIMARY KEY (`key`)
+//) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=0 ;"
+            $cow_table->addColumn((new Column\Integer('key'))->setOption('autoincrement', 'unused'));
+            $cow_table->addColumn((new Column\Integer('id')));
+            $cow_table->addColumn((new Column\Varchar('sid', 255))->setNullable(true));            
+            $cow_table->addColumn((new Column\Varchar('lemma', 255))->setNullable(true));
+            $cow_table->addColumn((new Column\Time('at')));
+            $cow_table->addColumn((new Column\Varchar('user', 255)));
+            $cow_table->addColumn((new Column\Text('entry_before')));
+            // Let's hack. TODO: Replace with doctrines DBAL?
+            $cow_sql = $this->sql->getSqlStringForSqlObject($cow_table) . 'ENGINE=InnoDB DEFAULT CHAR SET=utf8 AUTO_INCREMENT=0';
+                        $cow_sql = substr_replace($ndx_sql, ', ' .
+                    'INDEX `'. $data->name .'_ndx_c_id` (`id`) ',
+                     strrpos($cow_sql, ')'), 0);
+                        
+            $this->sql->getAdapter()->query(
+                    $ndx_sql,
+                    \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);            
+            $this->sql->getAdapter()->query(
+                    $sql,
+                    \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);
         }
         return new DictsEntity(array(
             'name' => $data->name,

@@ -239,7 +239,7 @@ class DictsResource extends AbstractResourceListener {
                     'FULLTEXT INDEX `'. $data->name .'_ndx_c_txt` (`txt`(360)) ',
                     strrpos($ndx_sql, ')'), 0);
             
-            $cow_table = new CreateTable($data->name . '_cow');
+//            $cow_table = new CreateTable($data->name . '_cow');
 //            $mysql = "CREATE TABLE IF NOT EXISTS `_cow` (".
 //  `entry_before` mediumtext NOT NULL,
 //  `user` varchar(255) NOT NULL,
@@ -250,25 +250,26 @@ class DictsResource extends AbstractResourceListener {
 //  `lemma` varchar(255) NOT NULL,
 //  PRIMARY KEY (`key`)
 //) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=0 ;"
-            $cow_table->addColumn((new Column\Integer('key'))->setOption('autoincrement', 'unused'));
-            $cow_table->addColumn((new Column\Integer('id')));
-            $cow_table->addColumn((new Column\Varchar('sid', 255))->setNullable(true));            
-            $cow_table->addColumn((new Column\Varchar('lemma', 255))->setNullable(true));
-            $cow_table->addColumn((new Column\Time('at')));
-            $cow_table->addColumn((new Column\Varchar('user', 255)));
-            $cow_table->addColumn((new Column\Text('entry_before')));                       
-            $cow_table->addConstraint(new Constraint\PrimaryKey('key'));
-            // Let's hack. TODO: Replace with doctrines DBAL?
-            $cow_sql = $this->sql->getSqlStringForSqlObject($cow_table) . ' ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0';
-            $cow_sql = substr_replace($cow_sql, ', ' .
-                    'INDEX `'. $data->name .'_cow_c_user` (`user`), ' .
-//                    'FULLTEXT INDEX `'. $data->name .'_c_entry_before` (`entry_before`), ' .
-                    'INDEX `'. $data->name .'_cow_c_id` (`id`) ',
-                     strrpos($cow_sql, ')'), 0);
-            
-            $this->sql->getAdapter()->query(
-                    $cow_sql,
-                    \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);            
+//            $cow_table->addColumn((new Column\Integer('key'))->setOption('autoincrement', 'unused'));
+//            $cow_table->addColumn((new Column\Integer('id')));
+//            $cow_table->addColumn((new Column\Varchar('sid', 255))->setNullable(true));            
+//            $cow_table->addColumn((new Column\Varchar('lemma', 255))->setNullable(true));
+//            Timestamp with current timestamp would be needed, not available -> DBAL
+//            $cow_table->addColumn((new Column\Timestamp('at')));
+//            $cow_table->addColumn((new Column\Varchar('user', 255)));
+//            $cow_table->addColumn((new Column\Text('entry_before')));                       
+//            $cow_table->addConstraint(new Constraint\PrimaryKey('key'));
+//            // Let's hack. TODO: Replace with doctrines DBAL?
+//            $cow_sql = $this->sql->getSqlStringForSqlObject($cow_table) . ' ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0';
+//            $cow_sql = substr_replace($cow_sql, ', ' .
+//                    'INDEX `'. $data->name .'_cow_c_user` (`user`), ' .
+////                    'FULLTEXT INDEX `'. $data->name .'_c_entry_before` (`entry_before`), ' .
+//                    'INDEX `'. $data->name .'_cow_c_id` (`id`) ',
+//                     strrpos($cow_sql, ')'), 0);
+//            
+//            $this->sql->getAdapter()->query(
+//                    $cow_sql,
+//                    \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);            
             $this->sql->getAdapter()->query(
                     $ndx_sql,
                     \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);            

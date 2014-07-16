@@ -56,17 +56,15 @@ protected function html_entity_decode_numeric($string, $flags = NULL, $charset =
 }
 
     protected function convertCharly($in) {
-        $in = str_replace('#8#', '&#', $in);
-        $in = str_replace('#9#', ';', $in);
-        $in = str_replace('#9#', ';', $in);
-        $in = str_replace('%gt;', '&gt;', $in);
-        $in = str_replace('%lt;', '&lt;', $in);
-        $in = $this->html_entity_decode_numeric($in);
+        $in = str_replace(array('#8#', '#9#'), array('&#', ';'), $in);
+        $in = $this->html_entity_decode_numeric($in);        
+        $in = str_replace(array('%gt;', '%lt;'), array('&gt;', '&lt;'), $in);
         return $in;
     }
+    
     public function exchangeArray($input) {
-        foreach (array_keys($input) as $item) {
-            $input[$item] = $this->convertCharly($input[$item]);
+        foreach ($input as $key => $item) {
+            $input[$key] = $this->convertCharly($item);
         }
         parent::exchangeArray($input);
     }

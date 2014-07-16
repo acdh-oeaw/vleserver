@@ -3,25 +3,31 @@
 namespace wde\V2\Rest\Entries;
 
 use ZF\Apigility\DbConnectedResource;
-use Zend\Db\TableGateway\TableGatewayInterface;
 use Zend\Db\TableGateway\TableGateway;
 use ZF\ApiProblem\ApiProblem;
 
 class EntriesResource extends DbConnectedResource {
     
-    public function __construct(TableGatewayInterface $table, $identifierName, $collectionClass) {
-        parent::__construct($table, $identifierName, $collectionClass);
-    }
-    
+    /**
+     *
+     * @var string
+     */
     protected $realTableName;
+    
+    /**
+     *
+     * @var EntriesTableGateway
+     */
+    protected $realTableGateway;
     
     protected function switchTable() {
         $this->table->getSql()->setTable($this->realTableName);
-        $this->table = new TableGateway($this->realTableName,
+        $this->realTableGateway = new TableGateway($this->realTableName,
                 $this->table->getAdapter(),
                 $this->table->getFeatureSet(),
                 $this->table->getResultSetPrototype(),
-                $this->table->getSql());        
+                $this->table->getSql());
+        $this->table = $this->realTableGateway;
     }
     
     public function fetchAll($data = array()) {
@@ -30,7 +36,13 @@ class EntriesResource extends DbConnectedResource {
             return new ApiProblem(404, 'Item not found');
         }
         $this->switchTable();
-        return parent::fetchAll($data);
+        $explicitPageSize = $this->getEvent()->getRequest()->getQuery('pageSize');
+        if ($explicitPageSize !== null && $explicitPageSize <= 10) {
+            $adapter = new EntriesTableGateway($this->table);
+        } else {
+            $adapter = new EntriesTableGateway($this->table, array('id', 'sid', 'lemma', 'status', 'locked', 'type'));
+        }
+        return new EntriesCollection($adapter);
     }
     
     public function fetch($id) {

@@ -76,7 +76,7 @@ return array(
             ),
             'collection_query_whitelist' => array(),
             'page_size' => 25,
-            'page_size_param' => null,
+            'page_size_param' => 'pageSize',
             'entity_class' => 'wde\\V2\\Rest\\Entries\\EntriesEntity',
             'collection_class' => 'wde\\V2\\Rest\\Entries\\EntriesCollection',
             'service_name' => 'entries',
@@ -184,7 +184,7 @@ return array(
     'zf-apigility' => array(
         'db-connected' => array(
             'wde\\V2\\Rest\\Dicts\\DictsResource' => array(
-                'adapter_name' => 'MySQLWDETest',
+                'adapter_name' => 'MySQLWDE',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Dicts\\Controller',
@@ -201,7 +201,7 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Entries\\EntriesResource',
             ),
             'wde\\V2\\Rest\\Users\\UsersResource' => array(
-                'adapter_name' => 'MySQLWDETest',
+                'adapter_name' => 'MySQLWDE',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Users\\Controller',

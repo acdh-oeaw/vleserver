@@ -85,6 +85,7 @@ return array(
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'zf-apigility-documentation/show' => __DIR__ . '/../view/doc/show.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',

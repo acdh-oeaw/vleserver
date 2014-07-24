@@ -56,6 +56,7 @@ protected function html_entity_decode_numeric($string, $flags = NULL, $charset =
 }
 
     protected function convertCharly($in) {
+        $in = str_replace(array('&amp;', '#8#38#9#'), array('&amp;amp;', '&amp;amp;'), $in);    
         $in = str_replace(array('#8#', '#9#'), array('&#', ';'), $in);
         $in = $this->html_entity_decode_numeric($in);        
         $in = str_replace(array('%gt;', '%lt;'), array('&gt;', '&lt;'), $in);

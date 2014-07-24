@@ -1,5 +1,53 @@
 <?php
 
+/**
+ * Callback helper 
+ */
+function chr_utf8_callback($matches) {
+    return chr_utf8(hexdec($matches[1]));
+}
+
+/**
+ * Multi-byte chr(): Will turn a numeric argument into a UTF-8 string.
+ * 
+ * @param mixed $num
+ * @return string
+ */
+function chr_utf8($matches) {
+    $num = $matches[1];
+    if ($num < 128) {
+        return chr($num);
+    }
+    if ($num < 2048) {
+        return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
+    }
+    if ($num < 65536) {
+        return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+    }
+    if ($num < 2097152) {
+        return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+    }
+    return '';
+}
+
+function html_entity_decode_numeric($string, $flags = NULL, $charset = "UTF-8") {
+    if (!isset($flags)) {
+        $flags = (ENT_COMPAT | ENT_HTML401);
+    }
+    $namedEntitiesDecoded = html_entity_decode($string, $flags, $charset);
+    $hexEntitiesDecoded = preg_replace_callback('~&#x([0-9a-fA-F]+);~i', "\\chr_utf8_callback", $namedEntitiesDecoded);
+    $decimalEntitiesDecoded = preg_replace_callback('~&#([0-9]+);~', '\\chr_utf8', $hexEntitiesDecoded);
+    return $decimalEntitiesDecoded;
+}
+
+function convertCharly($in) {
+        $in = str_replace(array('&amp;', '#8#38#9#'), array('&amp;amp;', '&amp;amp;'), $in);    
+        $in = str_replace(array('#8#', '#9#'), array('&#', ';'), $in);
+        $in = html_entity_decode_numeric($in);        
+        $in = str_replace(array('%gt;', '%lt;'), array('&gt;', '&lt;'), $in);
+        return $in;
+}
+
 if (function_exists('xdebug_start_error_collection')) {
     xdebug_start_error_collection();
 }
@@ -209,6 +257,7 @@ if ($method == 'GET') {
             $result = mysql_query($query2);
             $num = mysql_numrows($result);
             $text = mysql_result($result, 0, 0);
+            $text = convertCharly($text);
             $locked = mysql_result($result, 0, 1);
             $lockRecord = false;
             $belongsTouser = false;

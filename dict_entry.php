@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL & ~E_NOTICE);
+
 /**
  * Callback helper 
  */
@@ -41,7 +43,7 @@ function html_entity_decode_numeric($string, $flags = NULL, $charset = "UTF-8") 
 }
 
 function convertCharly($in) {
-        $in = str_replace(array('&amp;', '#8#38#9#'), array('&amp;amp;', '&amp;amp;'), $in);    
+        $in = str_replace(array('&amp;', '#8#38#9#', '&gt;', '&lt;', '&quot;'), array('&amp;amp;', '&amp;amp;', '&amp;gt;', '&amp;lt;', '&amp;quot;'), $in);    
         $in = str_replace(array('#8#', '#9#'), array('&#', ';'), $in);
         $in = html_entity_decode_numeric($in);        
         $in = str_replace(array('%gt;', '%lt;'), array('&gt;', '&lt;'), $in);
@@ -190,10 +192,10 @@ if ($method == 'PUT') {
                 // undo a make save strategy that backfires now.
                 $stemp = mysql_real_escape_string(str_replace("\\'", "'", stream_get_contents($fp)));
                 $ilen = strlen($stemp);
-                $first_row = mysql_fetch_array(mysql_query("SELECT entry, sid, lemma FROM $tablename WHERE id=$id"));
-                $oldentry = mysql_real_escape_string($first_row['entry']);
-                $oldsid = mysql_real_escape_string($first_row['sid']);
-                $oldlemma = mysql_real_escape_string($first_row['lemma']);
+//                $first_row = mysql_fetch_array(mysql_query("SELECT entry, sid, lemma FROM $tablename WHERE id=$id"));
+//                $oldentry = mysql_real_escape_string($first_row['entry']);
+//                $oldsid = mysql_real_escape_string($first_row['sid']);
+//                $oldlemma = mysql_real_escape_string($first_row['lemma']);
                 $query2 = "UPDATE $tablename SET entry='$stemp'$addstring where id=$id";
 
                 $protFile = "logs/entry_update.txt";

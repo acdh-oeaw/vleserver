@@ -4,6 +4,7 @@ return array(
         'adapters' => array(
             'MySQLWDE' => array(),
             'MySQLWDETest' => array(),
+            'MySQLOEWB' => array(),
         ),
     ),
     'zf-mvc-auth' => array(

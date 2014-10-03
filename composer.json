@@ -31,7 +31,8 @@
         "zfcampus/zf-apigility": "~1.0",
         "zfcampus/zf-apigility-documentation": "~1.0",
         "zfcampus/zf-development-mode": "~2.0",
-        "doctrine/dbal": "2.3.*"
+        "doctrine/dbal": "2.3.*",
+        "ircmaxell/password-compat": "~1.0"
     },
     "require-dev": {
         "zendframework/zftool": "dev-master",

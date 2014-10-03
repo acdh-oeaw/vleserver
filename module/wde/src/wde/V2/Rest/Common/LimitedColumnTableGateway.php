@@ -1,10 +1,10 @@
 <?php
-namespace wde\V2\Rest\Entries;
+namespace wde\V2\Rest\Common;
 
 use Zend\Paginator\Adapter\DbTableGateway;
 use Zend\Db\TableGateway\TableGatewayInterface;
 
-class EntriesTableGateway extends DbTableGateway {
+class LimitedColumnTableGateway extends DbTableGateway {
     
     /**
      * Note: $tableData is a reminder that this is only used to carry objects around.
@@ -21,3 +21,4 @@ class EntriesTableGateway extends DbTableGateway {
         }
     }
 }
+

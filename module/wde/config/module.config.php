@@ -29,6 +29,15 @@ return array(
                     ),
                 ),
             ),
+            'wde.rest.changes' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/dicts/:dict_name/entries/:entries_id/changes[/:changes_id]',
+                    'defaults' => array(
+                        'controller' => 'wde\\V2\\Rest\\Changes\\Controller',
+                    ),
+                ),
+            ),
         ),
     ),
     'zf-versioning' => array(
@@ -36,6 +45,7 @@ return array(
             0 => 'wde.rest.dicts',
             1 => 'wde.rest.entries',
             2 => 'wde.rest.users',
+            3 => 'wde.rest.changes',
         ),
     ),
     'zf-rest' => array(
@@ -107,12 +117,33 @@ return array(
             'collection_class' => 'wde\\V2\\Rest\\Users\\UsersCollection',
             'service_name' => 'users',
         ),
+        'wde\\V2\\Rest\\Changes\\Controller' => array(
+            'listener' => 'wde\\V2\\Rest\\Changes\\ChangesResource',
+            'route_name' => 'wde.rest.changes',
+            'route_identifier_name' => 'changes_id',
+            'collection_name' => 'changes',
+            'entity_http_methods' => array(
+                0 => 'GET',
+            ),
+            'collection_http_methods' => array(
+                0 => 'GET',
+            ),
+            'collection_query_whitelist' => array(
+                0 => 'user',
+            ),
+            'page_size' => 25,
+            'page_size_param' => 'pageSize',
+            'entity_class' => 'wde\\V2\\Rest\\Changes\\ChangesEntity',
+            'collection_class' => 'wde\\V2\\Rest\\Changes\\ChangesCollection',
+            'service_name' => 'changes',
+        ),
     ),
     'zf-content-negotiation' => array(
         'controllers' => array(
             'wde\\V2\\Rest\\Dicts\\Controller' => 'HalJson',
             'wde\\V2\\Rest\\Entries\\Controller' => 'HalJson',
             'wde\\V2\\Rest\\Users\\Controller' => 'HalJson',
+            'wde\\V2\\Rest\\Changes\\Controller' => 'HalJson',
         ),
         'accept_whitelist' => array(
             'wde\\V2\\Rest\\Dicts\\Controller' => array(
@@ -130,6 +161,11 @@ return array(
                 1 => 'application/hal+json',
                 2 => 'application/json',
             ),
+            'wde\\V2\\Rest\\Changes\\Controller' => array(
+                0 => 'application/vnd.wde.v2+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ),
         ),
         'content_type_whitelist' => array(
             'wde\\V2\\Rest\\Dicts\\Controller' => array(
@@ -141,6 +177,10 @@ return array(
                 1 => 'application/json',
             ),
             'wde\\V2\\Rest\\Users\\Controller' => array(
+                0 => 'application/vnd.wde.v2+json',
+                1 => 'application/json',
+            ),
+            'wde\\V2\\Rest\\Changes\\Controller' => array(
                 0 => 'application/vnd.wde.v2+json',
                 1 => 'application/json',
             ),
@@ -184,12 +224,24 @@ return array(
                 'route_identifier_name' => 'users_id',
                 'is_collection' => true,
             ),
+            'wde\\V2\\Rest\\Changes\\ChangesEntity' => array(
+                'entity_identifier_name' => 'key',
+                'route_name' => 'wde.rest.changes',
+                'route_identifier_name' => 'changes_id',
+                'hydrator' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
+            ),
+            'wde\\V2\\Rest\\Changes\\ChangesCollection' => array(
+                'entity_identifier_name' => 'key',
+                'route_name' => 'wde.rest.changes',
+                'route_identifier_name' => 'changes_id',
+                'is_collection' => true,
+            ),
         ),
     ),
     'zf-apigility' => array(
         'db-connected' => array(
             'wde\\V2\\Rest\\Dicts\\DictsResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLOEWB',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Dicts\\Controller',
@@ -197,7 +249,7 @@ return array(
                 'table_service' => 'wde\\V2\\Rest\\Dicts\\DictsResource',
             ),
             'wde\\V2\\Rest\\Entries\\EntriesResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLOEWB',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Entries\\Controller',
@@ -206,13 +258,22 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Entries\\EntriesResource',
             ),
             'wde\\V2\\Rest\\Users\\UsersResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLOEWB',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Users\\Controller',
                 'entity_identifier_name' => 'id',
                 'table_service' => 'wde\\V2\\Rest\\Users\\UsersResource\\Table',
                 'resource_class' => 'wde\\V2\\Rest\\Users\\UsersResource',
+            ),
+            'wde\\V2\\Rest\\Changes\\ChangesResource' => array(
+                'adapter_name' => 'MySQLOEWB',
+                'table_name' => 'unused',
+                'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
+                'controller_service_name' => 'wde\\V2\\Rest\\Changes\\Controller',
+                'entity_identifier_name' => 'key',
+                'table_service' => 'wde\\V2\\Rest\\Changes\\ChangesResource\\Table',
+                'resource_class' => 'wde\\V2\\Rest\\Changes\\ChangesResource',
             ),
         ),
     ),

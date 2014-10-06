@@ -27,7 +27,7 @@ class ChangesResource extends TableSwitchingResource {
         if ($explicitPageSize !== null && $explicitPageSize <= 10) {
             $adapter = new LimitedColumnTableGateway($this->table, array(), $entryFilter);
         } else {
-            $adapter = new LimitedColumnTableGateway($this->table, array('key', 'user', 'id', 'sid', 'lemma'), $entryFilter);
+            $adapter = new LimitedColumnTableGateway($this->table, array('key', 'user', 'at', 'id', 'sid', 'lemma'), $entryFilter);
         }
         return new ChangesCollection($adapter);
     }

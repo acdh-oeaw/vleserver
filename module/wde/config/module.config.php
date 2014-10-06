@@ -89,6 +89,7 @@ return array(
                 1 => 'sid',
                 2 => 'xpath',
                 3 => 'txt',
+                4 => 'pageSize',
             ),
             'page_size' => 25,
             'page_size_param' => 'pageSize',
@@ -130,6 +131,7 @@ return array(
             ),
             'collection_query_whitelist' => array(
                 0 => 'user',
+                1 => 'pageSize',
             ),
             'page_size' => 25,
             'page_size_param' => 'pageSize',

@@ -25,9 +25,9 @@ class ChangesResource extends TableSwitchingResource {
             $entryFilter->AND->equalTo('user', $requestedUser);
         }
         if ($explicitPageSize !== null && $explicitPageSize <= 10) {
-            $adapter = new LimitedColumnTableGateway($this->table, array(), $entryFilter);
+            $adapter = new LimitedColumnTableGateway($this->table, array(), $entryFilter, array('at' => 'desc'));
         } else {
-            $adapter = new LimitedColumnTableGateway($this->table, array('key', 'user', 'at', 'id', 'sid', 'lemma'), $entryFilter);
+            $adapter = new LimitedColumnTableGateway($this->table, array('key', 'user', 'at', 'id', 'sid', 'lemma'), $entryFilter, array('at' => 'desc'));
         }
         return new ChangesCollection($adapter);
     }

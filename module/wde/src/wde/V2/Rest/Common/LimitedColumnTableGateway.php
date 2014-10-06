@@ -14,9 +14,9 @@ class LimitedColumnTableGateway extends DbTableGateway {
      * @param \Zend\Db\TableGateway\TableGatewayInterface $tableData
      * @param array $columns Optionally limit the select query to these columns.
      */
-    public function __construct(TableGatewayInterface $tableData, array $columns = array(), PredicateInterface $where = null)
+    public function __construct(TableGatewayInterface $tableData, array $columns = array(), PredicateInterface $where = null, array $order = null)
     {
-        parent::__construct($tableData, $where);
+        parent::__construct($tableData, $where, $order);
         if ($columns !== array()) {
             $this->select->columns($columns);
         }

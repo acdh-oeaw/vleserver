@@ -295,6 +295,9 @@ return array(
         'wde\\V2\\Rest\\Entries\\Controller' => array(
             'input_filter' => 'wde\\V2\\Rest\\Entries\\Validator',
         ),
+        'wde\\V2\\Rest\\Changes\\Controller' => array(
+            'input_filter' => 'wde\\V2\\Rest\\Changes\\Validator',
+        ),
     ),
     'input_filter_specs' => array(
         'wde\\V2\\Rest\\Dicts\\Validator' => array(
@@ -530,6 +533,71 @@ return array(
                 'description' => 'The entry in the dictionary. A TEI XML snippet (or a whole document).',
             ),
         ),
+        'wde\\V2\\Rest\\Changes\\Validator' => array(
+            0 => array(
+                'name' => 'key',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'Automatically generated sequence number of the save entry event.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            1 => array(
+                'name' => 'user',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The user that saved the entry.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            2 => array(
+                'name' => 'at',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The time at wich the entry was saved.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            3 => array(
+                'name' => 'id',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The sid before the entry was updated. (Usually doesn\'t change.)',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            4 => array(
+                'name' => 'sid',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The sid before the entry was updated. (Might have changed.)',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            5 => array(
+                'name' => 'lemma',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The lemma before the entry was updated. (Might have changed.)',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            6 => array(
+                'name' => 'entry_before',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The entry <strong>before</strong> the possibly updated entry was saved by the user.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+        ),
     ),
     'zf-mvc-auth' => array(
         'authorization' => array(
@@ -576,6 +644,22 @@ return array(
                 'collection' => array(
                     'GET' => true,
                     'POST' => true,
+                    'PATCH' => false,
+                    'PUT' => false,
+                    'DELETE' => false,
+                ),
+            ),
+            'wde\\V2\\Rest\\Changes\\Controller' => array(
+                'entity' => array(
+                    'GET' => true,
+                    'POST' => false,
+                    'PATCH' => false,
+                    'PUT' => false,
+                    'DELETE' => false,
+                ),
+                'collection' => array(
+                    'GET' => true,
+                    'POST' => false,
                     'PATCH' => false,
                     'PUT' => false,
                     'DELETE' => false,

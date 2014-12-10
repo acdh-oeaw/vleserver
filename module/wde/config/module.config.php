@@ -243,7 +243,7 @@ return array(
     'zf-apigility' => array(
         'db-connected' => array(
             'wde\\V2\\Rest\\Dicts\\DictsResource' => array(
-                'adapter_name' => 'MySQLOEWB',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Dicts\\Controller',
@@ -251,7 +251,7 @@ return array(
                 'table_service' => 'wde\\V2\\Rest\\Dicts\\DictsResource',
             ),
             'wde\\V2\\Rest\\Entries\\EntriesResource' => array(
-                'adapter_name' => 'MySQLOEWB',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Entries\\Controller',
@@ -260,7 +260,7 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Entries\\EntriesResource',
             ),
             'wde\\V2\\Rest\\Users\\UsersResource' => array(
-                'adapter_name' => 'MySQLOEWB',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Users\\Controller',
@@ -269,7 +269,7 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Users\\UsersResource',
             ),
             'wde\\V2\\Rest\\Changes\\ChangesResource' => array(
-                'adapter_name' => 'MySQLOEWB',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Changes\\Controller',
@@ -328,7 +328,7 @@ return array(
                 'error_message' => 'This has to be a positiv integer.',
             ),
             1 => array(
-                'name' => 'userId',
+                'name' => 'userID',
                 'required' => true,
                 'filters' => array(
                     0 => array(
@@ -340,15 +340,15 @@ return array(
                     0 => array(
                         'name' => 'Zend\\Validator\\StringLength',
                         'options' => array(
-                            'min' => '3',
-                            'max' => '10',
+                            'min' => '5',
+                            'max' => '100',
                         ),
                     ),
                 ),
                 'allow_empty' => false,
                 'continue_if_empty' => false,
                 'description' => 'The user\'s ID or user name.',
-                'error_message' => 'Please use a something with a length between 3 and 10 characters.',
+                'error_message' => 'Please use some text with a length between 5 and 100 characters.',
             ),
             2 => array(
                 'name' => 'pw',
@@ -363,15 +363,15 @@ return array(
                     0 => array(
                         'name' => 'Zend\\Validator\\StringLength',
                         'options' => array(
-                            'min' => '3',
-                            'max' => '10',
+                            'min' => '8',
+                            'max' => '100',
                         ),
                     ),
                 ),
                 'allow_empty' => false,
                 'continue_if_empty' => false,
                 'description' => 'The password for that user and that table.',
-                'error_message' => 'Please use a something with a length between 3 and 10 characters.',
+                'error_message' => 'Please use some text with a length between 8 and 100 characters.',
             ),
             3 => array(
                 'name' => 'read',

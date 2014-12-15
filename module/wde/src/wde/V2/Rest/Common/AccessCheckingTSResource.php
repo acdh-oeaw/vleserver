@@ -6,40 +6,42 @@ use wde\V2\Rest\Common\TableSwitchingResource;
 use ZF\ApiProblem\ApiProblem;
 
 class AccessCheckingTSResource extends TableSwitchingResource {       
-    /**
-     *
-     * @var array 
-     */
+    /** @var array  */
     protected $tablesWithAuth;
+    
+    /** @var string */
+    protected $mainTableName;
+
 
     /**
      * @return boolean Whether the user is an admin user.
      */
     protected function isAdmin() {
-        return (in_array($this->realTableName, $this->tablesWithAuth) &&
-                ($this->getIdentity()->getAuthenticationIdentity()[$this->realTableName]['write'] === true) &&
-                ($this->getIdentity()->getAuthenticationIdentity()[$this->realTableName]['writeown'] === false));
+        return (in_array($this->mainTableName, $this->tablesWithAuth) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->mainTableName]['write'] === true) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->mainTableName]['writeown'] === false));
     }   
     /**
      * @return boolean Whether the user has the right to write.
      */
     protected function hasRightToWrite() {
-        return (in_array($this->realTableName, $this->tablesWithAuth) &&
-                ($this->getIdentity()->getAuthenticationIdentity()[$this->realTableName]['write'] === true));
+        return (in_array($this->mainTableName, $this->tablesWithAuth) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->mainTableName]['write'] === true));
     }    
     /**
      * @return boolean Whether the user has the right to write.
      */
     protected function hasRightToRead() {
-        return (in_array($this->realTableName, $this->tablesWithAuth) &&
-                ($this->getIdentity()->getAuthenticationIdentity()[$this->realTableName]['read'] === true));
+        return (in_array($this->mainTableName, $this->tablesWithAuth) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->mainTableName]['read'] === true));
     }
     
     protected function switchToTableInRouteIfExistsAndUserAuthorized() {
-        $this->realTableName = $this->event->getRouteParam('dict_name') .
+        $this->mainTableName = $this->event->getRouteParam('dict_name');
+        $this->realTableName = $this->mainTableName .
                                $this->realTableNameExtension;        
         $this->tablesWithAuth = array_keys($this->getIdentity()->getAuthenticationIdentity());
-        if ($this->realTableName === 'dict_users') {
+        if ($this->mainTableName === 'dict_users') {
             return new ApiProblem(404, 'Item not found');
         }
         if ($this->hasRightToRead()) {

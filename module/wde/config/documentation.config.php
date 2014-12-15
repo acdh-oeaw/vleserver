@@ -465,4 +465,7 @@ Notes on paging:
             'description' => 'The entry before it was chaged at the time denoted by at by user.',
         ),
     ),
+    'wde\\V2\\Rest\\EntriesNdx\\Controller' => array(
+        'description' => 'Access and update the XPaths that are used when limiting the data returned on an entries GET using the ndx parameter.',
+    ),
 );

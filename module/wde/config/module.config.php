@@ -162,9 +162,8 @@ return array(
             ),
             'collection_http_methods' => array(
                 0 => 'GET',
-                1 => 'POST',
-                2 => 'DELETE',
-                3 => 'PUT',
+                1 => 'DELETE',
+                2 => 'PATCH',
             ),
             'collection_query_whitelist' => array(),
             'page_size' => 25,

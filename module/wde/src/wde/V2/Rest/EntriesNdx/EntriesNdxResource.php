@@ -22,7 +22,11 @@ class EntriesNdxResource extends AccessCheckingTSResource {
         return new EntriesNdxCollection($adapter);
     }
     
-    public function create($data) {
-        return parent::create($data);
+    public function patchList($data) {
+        parent::patchList($data);
+    }
+    
+    public function deleteList($data) {
+        parent::deleteList($data);
     }
 }

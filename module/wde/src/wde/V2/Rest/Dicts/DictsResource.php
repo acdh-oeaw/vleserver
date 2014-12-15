@@ -143,7 +143,9 @@ class DictsResource extends AbstractResourceListener {
             return new ApiProblem(409, 'Dictionary already exists');
         } else if ($data->name === 'dict_users') {
           
-            $conn = DriverManager::getConnection(array('driver' => 'mysqli'));
+            $driver = $this->sql->getAdapter()->getPlatform()->getName();
+            $driver = explode('\\', get_class($this->sql->getAdapter()->getDriver()));
+            $conn = DriverManager::getConnection(array('driver' => strtolower($driver[count($driver) - 1])));
             $query = $this->getUserTableSchema()->toSql($conn->getDatabasePlatform());
             
             $this->sql->getAdapter()->query($query[0],
@@ -156,7 +158,8 @@ class DictsResource extends AbstractResourceListener {
                 return new ApiProblem(403, 'You are not authorized to create this dictionary');
             }
           
-            $conn = DriverManager::getConnection(array('driver' => 'mysqli'));
+            $driver = explode('\\', get_class($this->sql->getAdapter()->getDriver()));
+            $conn = DriverManager::getConnection(array('driver' => strtolower($driver[count($driver) - 1])));
             $queries = $this->getSchema($data)->toSql($conn->getDatabasePlatform());            
             
             foreach ($queries as $query) {
@@ -336,7 +339,8 @@ class DictsResource extends AbstractResourceListener {
           $schema = $this->getSchema($data);  
         }
         
-        $conn = DriverManager::getConnection(array('driver' => 'mysqli'));
+        $driver = explode('\\', get_class($this->sql->getAdapter()->getDriver()));
+        $conn = DriverManager::getConnection(array('driver' => strtolower($driver[count($driver) - 1])));
         $queries = $schema->toDropSql($conn->getDatabasePlatform());
 
         foreach ($queries as $query) {

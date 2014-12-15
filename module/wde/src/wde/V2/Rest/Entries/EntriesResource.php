@@ -2,11 +2,11 @@
 
 namespace wde\V2\Rest\Entries;
 
-use wde\V2\Rest\Common\TableSwitchingResource;
+use wde\V2\Rest\Common\AccessCheckingTSResource;
 use wde\V2\Rest\Common\LimitedColumnTableGateway;
 use ZF\ApiProblem\ApiProblem;
 
-class EntriesResource extends TableSwitchingResource {
+class EntriesResource extends AccessCheckingTSResource {
     
     public function fetchAll($data = array()) {
         parent::fetchAll($data);
@@ -17,6 +17,16 @@ class EntriesResource extends TableSwitchingResource {
             $adapter = new LimitedColumnTableGateway($this->table, array('id', 'sid', 'lemma', 'status', 'locked', 'type'));
         }
         return new EntriesCollection($adapter);
+    }
+
+    public function create($data)
+    {
+        return parent::create($data);
+    }
+
+    public function update($id, $data)
+    {
+        return parent::update($id, $data);
     }
     
 }

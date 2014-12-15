@@ -1,0 +1,93 @@
+<?php
+
+namespace wde\V2\Rest\Common;
+
+use wde\V2\Rest\Common\TableSwitchingResource;
+use ZF\ApiProblem\ApiProblem;
+
+class AccessCheckingTSResource extends TableSwitchingResource {       
+    /**
+     *
+     * @var array 
+     */
+    protected $tablesWithAuth;
+
+    /**
+     * @return boolean Whether the user is an admin user.
+     */
+    protected function isAdmin() {
+        return (in_array($this->realTableName, $this->tablesWithAuth) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->realTableName]['write'] === true) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->realTableName]['writeown'] === false));
+    }   
+    /**
+     * @return boolean Whether the user has the right to write.
+     */
+    protected function hasRightToWrite() {
+        return (in_array($this->realTableName, $this->tablesWithAuth) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->realTableName]['write'] === true));
+    }    
+    /**
+     * @return boolean Whether the user has the right to write.
+     */
+    protected function hasRightToRead() {
+        return (in_array($this->realTableName, $this->tablesWithAuth) &&
+                ($this->getIdentity()->getAuthenticationIdentity()[$this->realTableName]['read'] === true));
+    }
+    
+    protected function switchToTableInRouteIfExistsAndUserAuthorized() {
+        $this->realTableName = $this->event->getRouteParam('dict_name') .
+                               $this->realTableNameExtension;        
+        $this->tablesWithAuth = array_keys($this->getIdentity()->getAuthenticationIdentity());
+        if ($this->realTableName === 'dict_users') {
+            return new ApiProblem(404, 'Item not found');
+        }
+        if ($this->hasRightToRead()) {
+            $this->switchTable();
+            return false;
+        }        
+        return new ApiProblem(403, 'Not allowed. You are not authorized for this dictionary.');
+    }
+    
+    protected function checkHasNoRightToWrite() {     
+        if ($this->hasRightToWrite()) {
+            return false;
+        }        
+        return new ApiProblem(403, 'Not allowed. You are not authorized to write to this dictionary.'); 
+    }
+    
+    protected function checkHasNoAdminRights() {     
+        if ($this->isAdmin()) {
+            return false;
+        }        
+        return new ApiProblem(403, 'Not allowed. You have to be an administrator to do this.');       
+    }
+    
+    public function fetchAll($data = array()) {          
+        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        return parent::fetchAll($data);
+    }
+    
+    public function fetch($id) {          
+        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        return parent::fetch($id);
+    }
+
+    public function create($data) {          
+        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        if (true == $canNotWrite = $this->checkHasNoRightToWrite()) { return $canNotWrite; } // is an ApiProblem
+        return parent::create($data);
+    }
+
+    public function update($id, $data) {          
+        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
+        return parent::update($id, $data);
+    }
+
+    public function delete($id) {          
+        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
+        return parent::delete($id);
+    }
+}

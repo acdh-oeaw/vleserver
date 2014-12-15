@@ -4,7 +4,6 @@ namespace wde\V2\Rest\Common;
 
 use ZF\Apigility\DbConnectedResource;
 use Zend\Db\TableGateway\TableGateway;
-use ZF\ApiProblem\ApiProblem;
 
 class TableSwitchingResource extends DbConnectedResource {
     /**
@@ -35,23 +34,5 @@ class TableSwitchingResource extends DbConnectedResource {
         $this->table = $this->realTableGateway;
     }
     
-    public function fetchAll($data = array()) {
-        $this->realTableName = $this->event->getRouteParam('dict_name') .
-                               $this->realTableNameExtension;
-        if ($this->realTableName === 'dict_users') {
-            return new ApiProblem(404, 'Item not found');
-        }
-        $this->switchTable();            
-    }
-    
-    public function fetch($id) {
-        $this->realTableName = $this->event->getRouteParam('dict_name') .
-                               $this->realTableNameExtension;
-        if ($this->realTableName === 'dict_users') {
-            return new ApiProblem(404, 'Item not found');
-        }
-        $this->switchTable();
-        return parent::fetch($id);
-    }
 }
 

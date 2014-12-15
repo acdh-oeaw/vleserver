@@ -38,6 +38,15 @@ return array(
                     ),
                 ),
             ),
+            'wde.rest.entries-ndx' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/dicts/:dict_name/entries/:entries_id/entries_ndx[/:entries_ndx_id]',
+                    'defaults' => array(
+                        'controller' => 'wde\\V2\\Rest\\EntriesNdx\\Controller',
+                    ),
+                ),
+            ),
         ),
     ),
     'zf-versioning' => array(
@@ -46,6 +55,7 @@ return array(
             1 => 'wde.rest.entries',
             2 => 'wde.rest.users',
             3 => 'wde.rest.changes',
+            4 => 'wde.rest.entries-ndx',
         ),
     ),
     'zf-rest' => array(
@@ -139,6 +149,31 @@ return array(
             'collection_class' => 'wde\\V2\\Rest\\Changes\\ChangesCollection',
             'service_name' => 'changes',
         ),
+        'wde\\V2\\Rest\\EntriesNdx\\Controller' => array(
+            'listener' => 'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxResource',
+            'route_name' => 'wde.rest.entries-ndx',
+            'route_identifier_name' => 'entries_ndx_id',
+            'collection_name' => 'entries_ndx',
+            'entity_http_methods' => array(
+                0 => 'GET',
+                1 => 'PUT',
+                2 => 'DELETE',
+                3 => 'POST',
+            ),
+            'collection_http_methods' => array(
+                0 => 'GET',
+                1 => 'POST',
+                2 => 'DELETE',
+                3 => 'PUT',
+                4 => 'PATCH',
+            ),
+            'collection_query_whitelist' => array(),
+            'page_size' => 25,
+            'page_size_param' => null,
+            'entity_class' => 'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxEntity',
+            'collection_class' => 'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxCollection',
+            'service_name' => 'entries_ndx',
+        ),
     ),
     'zf-content-negotiation' => array(
         'controllers' => array(
@@ -146,6 +181,7 @@ return array(
             'wde\\V2\\Rest\\Entries\\Controller' => 'HalJson',
             'wde\\V2\\Rest\\Users\\Controller' => 'HalJson',
             'wde\\V2\\Rest\\Changes\\Controller' => 'HalJson',
+            'wde\\V2\\Rest\\EntriesNdx\\Controller' => 'HalJson',
         ),
         'accept_whitelist' => array(
             'wde\\V2\\Rest\\Dicts\\Controller' => array(
@@ -168,6 +204,11 @@ return array(
                 1 => 'application/hal+json',
                 2 => 'application/json',
             ),
+            'wde\\V2\\Rest\\EntriesNdx\\Controller' => array(
+                0 => 'application/vnd.wde.v2+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ),
         ),
         'content_type_whitelist' => array(
             'wde\\V2\\Rest\\Dicts\\Controller' => array(
@@ -183,6 +224,10 @@ return array(
                 1 => 'application/json',
             ),
             'wde\\V2\\Rest\\Changes\\Controller' => array(
+                0 => 'application/vnd.wde.v2+json',
+                1 => 'application/json',
+            ),
+            'wde\\V2\\Rest\\EntriesNdx\\Controller' => array(
                 0 => 'application/vnd.wde.v2+json',
                 1 => 'application/json',
             ),
@@ -238,12 +283,24 @@ return array(
                 'route_identifier_name' => 'changes_id',
                 'is_collection' => true,
             ),
+            'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxEntity' => array(
+                'entity_identifier_name' => 'id',
+                'route_name' => 'wde.rest.entries-ndx',
+                'route_identifier_name' => 'entries_ndx_id',
+                'hydrator' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
+            ),
+            'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxCollection' => array(
+                'entity_identifier_name' => 'id',
+                'route_name' => 'wde.rest.entries-ndx',
+                'route_identifier_name' => 'entries_ndx_id',
+                'is_collection' => true,
+            ),
         ),
     ),
     'zf-apigility' => array(
         'db-connected' => array(
             'wde\\V2\\Rest\\Dicts\\DictsResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Dicts\\Controller',
@@ -251,7 +308,7 @@ return array(
                 'table_service' => 'wde\\V2\\Rest\\Dicts\\DictsResource',
             ),
             'wde\\V2\\Rest\\Entries\\EntriesResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Entries\\Controller',
@@ -260,7 +317,7 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Entries\\EntriesResource',
             ),
             'wde\\V2\\Rest\\Users\\UsersResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Users\\Controller',
@@ -269,13 +326,22 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Users\\UsersResource',
             ),
             'wde\\V2\\Rest\\Changes\\ChangesResource' => array(
-                'adapter_name' => 'MySQLWDE',
+                'adapter_name' => 'MySQLWDETest',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Changes\\Controller',
                 'entity_identifier_name' => 'key',
                 'table_service' => 'wde\\V2\\Rest\\Changes\\ChangesResource\\Table',
                 'resource_class' => 'wde\\V2\\Rest\\Changes\\ChangesResource',
+            ),
+            'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxResource' => array(
+                'adapter_name' => 'MySQLWDETest',
+                'table_name' => 'unused',
+                'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
+                'controller_service_name' => 'wde\\V2\\Rest\\EntriesNdx\\Controller',
+                'entity_identifier_name' => 'id',
+                'table_service' => 'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxResource\\Table',
+                'resource_class' => 'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxResource',
             ),
         ),
     ),
@@ -294,6 +360,12 @@ return array(
         ),
         'wde\\V2\\Rest\\Entries\\Controller' => array(
             'input_filter' => 'wde\\V2\\Rest\\Entries\\Validator',
+        ),
+        'wde\\V2\\Rest\\Changes\\Controller' => array(
+            'input_filter' => 'wde\\V2\\Rest\\Changes\\Validator',
+        ),
+        'wde\\V2\\Rest\\EntriesNdx\\Controller' => array(
+            'input_filter' => 'wde\\V2\\Rest\\EntriesNdx\\Validator',
         ),
     ),
     'input_filter_specs' => array(
@@ -325,7 +397,7 @@ return array(
                 'error_message' => 'This has to be a positiv integer.',
             ),
             1 => array(
-                'name' => 'userId',
+                'name' => 'userID',
                 'required' => true,
                 'filters' => array(
                     0 => array(
@@ -337,15 +409,15 @@ return array(
                     0 => array(
                         'name' => 'Zend\\Validator\\StringLength',
                         'options' => array(
-                            'min' => '3',
-                            'max' => '10',
+                            'min' => '5',
+                            'max' => '100',
                         ),
                     ),
                 ),
                 'allow_empty' => false,
                 'continue_if_empty' => false,
                 'description' => 'The user\'s ID or user name.',
-                'error_message' => 'Please use a something with a length between 3 and 10 characters.',
+                'error_message' => 'Please use some text with a length between 5 and 100 characters.',
             ),
             2 => array(
                 'name' => 'pw',
@@ -360,15 +432,15 @@ return array(
                     0 => array(
                         'name' => 'Zend\\Validator\\StringLength',
                         'options' => array(
-                            'min' => '3',
-                            'max' => '10',
+                            'min' => '8',
+                            'max' => '100',
                         ),
                     ),
                 ),
                 'allow_empty' => false,
                 'continue_if_empty' => false,
                 'description' => 'The password for that user and that table.',
-                'error_message' => 'Please use a something with a length between 3 and 10 characters.',
+                'error_message' => 'Please use some text with a length between 8 and 100 characters.',
             ),
             3 => array(
                 'name' => 'read',
@@ -530,6 +602,100 @@ return array(
                 'description' => 'The entry in the dictionary. A TEI XML snippet (or a whole document).',
             ),
         ),
+        'wde\\V2\\Rest\\Changes\\Validator' => array(
+            0 => array(
+                'name' => 'key',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'Automatically generated sequence number of the save entry event.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            1 => array(
+                'name' => 'user',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The user that saved the entry.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            2 => array(
+                'name' => 'at',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The time at wich the entry was saved.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            3 => array(
+                'name' => 'id',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The sid before the entry was updated. (Usually doesn\'t change.)',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            4 => array(
+                'name' => 'sid',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The sid before the entry was updated. (Might have changed.)',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            5 => array(
+                'name' => 'lemma',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The lemma before the entry was updated. (Might have changed.)',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+            6 => array(
+                'name' => 'entry_before',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The entry <strong>before</strong> the possibly updated entry was saved by the user.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
+            ),
+        ),
+        'wde\\V2\\Rest\\EntriesNdx\\Validator' => array(
+            0 => array(
+                'name' => 'id',
+                'required' => true,
+                'filters' => array(
+                    0 => array(
+                        'name' => 'Zend\\Filter\\Int',
+                        'options' => array(),
+                    ),
+                ),
+                'validators' => array(),
+                'description' => 'The id of the entry this XPath belongs to',
+                'error_message' => 'Has to be an integer.',
+            ),
+            1 => array(
+                'name' => 'xpath',
+                'required' => true,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'An XPath (although with - as the separator) within an entry.',
+            ),
+            2 => array(
+                'name' => 'txt',
+                'required' => true,
+                'filters' => array(),
+                'validators' => array(),
+                'description' => 'The text that will be returned if this XPath is selected using an XML tool.',
+            ),
+        ),
     ),
     'zf-mvc-auth' => array(
         'authorization' => array(
@@ -579,6 +745,38 @@ return array(
                     'PATCH' => false,
                     'PUT' => false,
                     'DELETE' => false,
+                ),
+            ),
+            'wde\\V2\\Rest\\Changes\\Controller' => array(
+                'entity' => array(
+                    'GET' => true,
+                    'POST' => false,
+                    'PATCH' => false,
+                    'PUT' => false,
+                    'DELETE' => false,
+                ),
+                'collection' => array(
+                    'GET' => true,
+                    'POST' => false,
+                    'PATCH' => false,
+                    'PUT' => false,
+                    'DELETE' => false,
+                ),
+            ),
+            'wde\\V2\\Rest\\EntriesNdx\\Controller' => array(
+                'entity' => array(
+                    'GET' => true,
+                    'POST' => true,
+                    'PATCH' => false,
+                    'PUT' => true,
+                    'DELETE' => true,
+                ),
+                'collection' => array(
+                    'GET' => true,
+                    'POST' => true,
+                    'PATCH' => false,
+                    'PUT' => false,
+                    'DELETE' => true,
                 ),
             ),
         ),

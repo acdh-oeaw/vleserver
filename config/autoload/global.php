@@ -14,6 +14,7 @@ return array(
                     0 => 'basic',
                 ),
                 'realm' => 'rest',
+                'htpasswd' => 'uses/database'
             ),
         ),
     ),

@@ -17,8 +17,10 @@ class DictsDictUsersBasicAuth implements ResolverInterface
     protected $metadata;
     
     public function __construct(AdapterInterface $adapter) {
-        $this->metadata = new Metadata($adapter);
-        $this->table = new TableGateway('dict_users', $adapter);
+        if (isset($adapter)) {
+          $this->metadata = new Metadata($adapter);
+          $this->table = new TableGateway('dict_users', $adapter);
+        }
     }
     
     protected function getDefaultDictUsersAuthorization() {
@@ -53,8 +55,12 @@ class DictsDictUsersBasicAuth implements ResolverInterface
             throw new Exception\InvalidArgumentException('Password is required');
         } 
         
-        $tableNames = $this->metadata->getTableNames();
-       
+        if (isset($this->metadata)) {
+            $tableNames = $this->metadata->getTableNames();
+        } else {
+            $tableNames = array();
+        }
+
         if (in_array('dict_users', $tableNames)) {
             $testAnyUsers = $this->table->select();
             if ($testAnyUsers->count() > 0) {

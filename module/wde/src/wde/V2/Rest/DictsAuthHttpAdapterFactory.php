@@ -58,7 +58,10 @@ class DictsAuthHttpAdapterFactory implements FactoryInterface
 
         $dbConnectedConfig = $config['zf-apigility']['db-connected']['wde\\V2\\Rest\\Dicts\\DictsResource'];
         
-        $adapter    = $this->getAdapterFromConfig($dbConnectedConfig, $services);
+        try {
+            $adapter    = $this->getAdapterFromConfig($dbConnectedConfig, $services);
+        } catch (\Zend\ServiceManager\Exception\ServiceNotFoundException $e) { $adapter = null; }
+        
         
         if (in_array('basic', $httpConfig['accept_schemes']) && isset($httpConfig['htpasswd'])) {
             $httpAdapter->setBasicResolver(new DictsDictUsersBasicAuth($adapter));

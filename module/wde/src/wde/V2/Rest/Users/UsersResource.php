@@ -90,7 +90,7 @@ class UsersResource extends DbConnectedResource {
             if ($anyUsers->count() === 0) {
                 // Initial setup case
                 if ($data->table !== 'dict_users' ||
-                        $data->userId !== $this->getIdentity()->getName()) {
+                        $data->userID !== $this->getIdentity()->getName()) {
                     return new ApiProblem(403, 'You need to register yourself as admin user first.');
                 }
             } else {
@@ -101,7 +101,7 @@ class UsersResource extends DbConnectedResource {
                     return new ApiProblem(403, 'You are already an admin user.');
                 }
                 $existsCheck = $this->table->select(array(
-                    'userId' => $data->userId,
+                    'userID' => $data->userID,
                     'table' => $data->table,
                 ));
                 if ($existsCheck->count() > 0) {
@@ -124,12 +124,12 @@ class UsersResource extends DbConnectedResource {
                 $inputFilter->setData((array) $data);
             }
             if ($this->isAdmin()) {
-                if ($data->userId !== $storedUser['userID'] ||
+                if ($data->userID !== $storedUser['userID'] ||
                     $data->table !== $storedUser['table']) {
                     return new ApiProblem(403, 'Only changing rights and passord is allowed.');
                 }
             } else {
-                 if ($data->userId !== $storedUser['userID'] ||
+                 if ($data->userID !== $storedUser['userID'] ||
                         $data->read !== $storedUser['read'] ||
                         $data->write !== $storedUser['write'] ||
                         $data->writeown !== $storedUser['writeown'] ||
@@ -139,6 +139,36 @@ class UsersResource extends DbConnectedResource {
             }           
             return parent::patch($userIdFromPath, $data);
         }
+    }
+
+    /**
+     * Delete a resource
+     *
+     * @param  mixed $id
+     * @return ApiProblem|mixed
+     */
+    public function delete($id)
+    {
+        $this->tableName = $this->event->getRouteParam('dict_name');
+        $this->tablesWithAuth = array_keys($this->getIdentity()->getAuthenticationIdentity());
+        if (!$this->isAdmin()) {
+            return new ApiProblem(403, 'You are not authorized to delete this user');
+        }
+        if ($id === $this->getIdentity()->getName()){
+            return new ApiProblem(403, 'You are not allowed to delete yourself. Ask another administrator.');
+        }
+        return parent::delete($id);
+    }
+
+    /**
+     * Delete a collection, or members of a collection
+     *
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function deleteList($data)
+    {
+        return new ApiProblem(405, 'The DELETE method has not been defined for collections');
     }
 }
 

@@ -2,9 +2,9 @@
 return array(
     'db' => array(
         'adapters' => array(
-            'MySQLWDE' => array(),
-            'MySQLWDETest' => array(),
-            'MySQLOEWB' => array(),
+            'MySQLWDE' => array('options'=> array('buffer_results'=>true)),
+            'MySQLWDETest' => array('options'=> array('buffer_results'=>true)),
+            'MySQLOEWB' => array('options'=> array('buffer_results'=>true)),
         ),
     ),
     'zf-mvc-auth' => array(
@@ -14,7 +14,7 @@ return array(
                     0 => 'basic',
                 ),
                 'realm' => 'rest',
-                'htpasswd' => 'uses/database'
+                'htpasswd' => 'uses/database',
             ),
         ),
     ),

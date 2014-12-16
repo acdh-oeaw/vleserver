@@ -1,44 +1,34 @@
-Apigility Skeleton Application
-==============================
+Apigility based Rest Service for WDE
+====================================
 
 Requirements
 ------------
   
 Please see the [composer.json](composer.json) file.
+To edit the docs when using apigility 1.0.4(+?) hotfix/226 is needed for rest service doc.
+If not applied all attempts to edit the docs will DELETE them!+
+The relevant part is
+```php
+    protected function getServiceType($service)
+    {
+        if (strstr($service, '\\Rest\\')
+            || strstr($service, '-Rest-')) {
+            return 'rest';
+        }
+        return 'rpc';
+    }
+```
+Starting at line 737 in vendor/zf-campus/zf-apigility-admin/Module.php.
 
 Installation
 ------------
-
-### Via release tarball
-
-Grab the latest release via the [Apigility website](http://apigility.org/)
-and/or the [releases page](https://github.com/zfcampus/zf-apigility-skeleton/releases).
-At the time of this writing, that URI is:
-
-- https://github.com/zfcampus/zf-apigility-skeleton/releases/download/0.9.1/zf-apigility-skeleton-0.9.1.tgz
-
-Untar it:
-
-```bash
-tar xzf zf-apigility-skeleton-0.9.1.tgz
-```
-
-### Via Composer (create-project)
-
-You can use the `create-project` command from [Composer](http://getcomposer.org/)
-to create the project in one go:
-
-```bash
-curl -s https://getcomposer.org/installer | php --
-php composer.phar create-project -sdev zfcampus/zf-apigility-skeleton path/to/install
-```
 
 ### Via Git (clone)
 
 First, clone the repository:
 
 ```bash
-git clone https://github.com/zfcampus/zf-apigility-skeleton.git # optionally, specify the directory in which to clone
+git clone git@corpus3.aac.ac.at:php_scripts # optionally, specify the directory in which to clone
 cd path/to/install
 ```
 
@@ -49,7 +39,7 @@ dependencies. Assuming you already have Composer:
 composer.phar install
 ```
 
-### All methods
+### Run Composer
 
 Once you have the basic installation, you need to put it in development mode:
 
@@ -60,6 +50,8 @@ php public/index.php development enable # put the skeleton in development mode
 
 Now, fire it up! Do one of the following:
 
+- Just create a symbolic link from the web servers htdocs/html directory to
+  the `public/` directory. Rename that link e. g. `rest/` or `restttest/`
 - Create a vhost in your web server that points the DocumentRoot to the
   `public/` directory of the project
 - Fire up the built-in web server in PHP (5.4.8+) (**note**: do not use this for

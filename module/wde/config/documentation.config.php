@@ -234,6 +234,158 @@ Definitions:
 <li>A global admin user is a user that is authorized to read and write any entry in "dict_users". Global admin users are authorized to manipulate users for any dictionary also through a url referriung to that dictionary.</li>
 </ul>',
     ),
+    'wde\\V2\\Rest\\Changes\\Controller' => array(
+        'description' => 'Access to the change log entries stored for a particular entry in the dictionaries.',
+        'collection' => array(
+            'GET' => array(
+                'description' => 'Read only. The list size can be limited by passing pageSize. For a pageSize of more than 10 no entry before is returned as embedded result. Default pageSize is 25. For only getting the changes of a user pass a user paramter with the user name.',
+                'request' => null,
+                'response' => '{
+   "_links": {
+       "self": {
+           "href": "/dicts/:dict_name/entries/:entries_id/changes"
+       },
+       "first": {
+           "href": "/dicts/:dict_name/entries/:entries_id/changes?page={page}"
+       },
+       "prev": {
+           "href": "/dicts/:dict_name/entries/:entries_id/changes?page={page}"
+       },
+       "next": {
+           "href": "/dicts/:dict_name/entries/:entries_id/changes?page={page}"
+       },
+       "last": {
+           "href": "/dicts/:dict_name/entries/:entries_id/changes?page={page}"
+       }
+   }
+   "_embedded": {
+       "changes": [
+           {
+               "_links": {
+                   "self": {
+                       "href": "/dicts/:dict_name/entries/:entries_id/changes[/:changes_id]"
+                   }
+               }
+              "key": "Automatically generated sequence number of the save entry event.",
+              "user": "The user that saved the entry.",
+              "at": "The time at wich the entry was saved.",
+              "id": "The sid before the entry was updated. (Usually doesn\'t change.)",
+              "sid": "The sid before the entry was updated. (Might have changed.)",
+              "lemma": "The lemma before the entry was updated. (Might have changed.)",
+              "entry_before": "The entry <strong>before</strong> the possibly updated entry was saved by the user."
+           }
+       ]
+   }
+}',
+            ),
+            'description' => 'List of all chages to a particular entry.',
+        ),
+        'entity' => array(
+            'GET' => array(
+                'description' => 'Read only.',
+                'request' => null,
+                'response' => '{
+   "_links": {
+       "self": {
+           "href": "/dicts/:dict_name/entries/:entries_id/changes[/:changes_id]"
+       }
+   }
+   "key": "Automatically generated sequence number of the save entry event.",
+   "user": "The user that saved the entry.",
+   "at": "The time at wich the entry was saved.",
+   "id": "The sid before the entry was updated. (Usually doesn\'t change.)",
+   "sid": "The sid before the entry was updated. (Might have changed.)",
+   "lemma": "The lemma before the entry was updated. (Might have changed.)",
+   "entry_before": "The entry <strong>before</strong> the possibly updated entry was saved by the user."
+}',
+            ),
+            'description' => 'The entry before it was chaged at the time denoted by at by user.',
+        ),
+    ),
+    'wde\\V2\\Rest\\EntriesNdx\\Controller' => array(
+        'description' => 'Access and update the XPaths that are used when limiting the data returned on an entries GET using the ndx parameter.',
+        'collection' => array(
+            'GET' => array(
+                'description' => 'Get all the xpath => txt data for the entry specified in the path.',
+                'request' => null,
+                'response' => '{
+   "_links": {
+       "self": {
+           "href": "/dicts/:dict_name/entries/:entries_id/entries_ndx"
+       },
+       "first": {
+           "href": "/dicts/:dict_name/entries/:entries_id/entries_ndx?page={page}"
+       },
+       "prev": {
+           "href": "/dicts/:dict_name/entries/:entries_id/entries_ndx?page={page}"
+       },
+       "next": {
+           "href": "/dicts/:dict_name/entries/:entries_id/entries_ndx?page={page}"
+       },
+       "last": {
+           "href": "/dicts/:dict_name/entries/:entries_id/entries_ndx?page={page}"
+       }
+   }
+   "_embedded": {
+       "entries_ndx": [
+           {
+               "_links": {
+                   "self": {
+                       "href": "/dicts/:dict_name/entries/:entries_id/entries_ndx[/:entries_ndx_id]"
+                   }
+               }
+              "id": "The id of the entry this XPath belongs to",
+              "xpath": "An XPath (although with - as the separator) within an entry.",
+              "txt": "The text that will be returned if this XPath is selected using an XML tool."
+           }
+       ]
+   }
+}',
+            ),
+            'DELETE' => array(
+                'description' => 'Delete all xpath => text entries for the entry_id specified in the path.',
+                'request' => '{
+   "id": "The id of the entry this XPath belongs to",
+   "xpath": "An XPath (although with - as the separator) within an entry.",
+   "txt": "The text that will be returned if this XPath is selected using an XML tool."
+}',
+                'response' => null,
+            ),
+            'PATCH' => array(
+                'description' => 'Create or change all xpath => text entries for the entry_id specified in the path.',
+                'request' => '{
+   "id": "The id of the entry this XPath belongs to",
+   "xpath": "An XPath (although with - as the separator) within an entry.",
+   "txt": "The text that will be returned if this XPath is selected using an XML tool."
+}',
+                'response' => null,
+            ),
+            'description' => 'Manipulate a set of xpath => text entries at once. Preffered method.',
+        ),
+        'entity' => array(
+            'GET' => array(
+                'description' => 'Not implemneted yet.',
+                'request' => null,
+                'response' => null,
+            ),
+            'PUT' => array(
+                'description' => 'Not implemneted yet.',
+                'request' => null,
+                'response' => null,
+            ),
+            'DELETE' => array(
+                'description' => 'Not implemneted yet.',
+                'request' => null,
+                'response' => null,
+            ),
+            'POST' => array(
+                'description' => 'Not implemneted yet.',
+                'request' => null,
+                'response' => null,
+            ),
+            'description' => 'Manipulate a single entry (not implemented yet).',
+        ),
+    ),
     'wde\\V2\\Rest\\Entries\\Controller' => array(
         'collection' => array(
             'GET' => array(
@@ -316,6 +468,11 @@ Notes on paging:
 }',
             ),
             'description' => 'Entries in the given dictionary. Does not work for "dict_users" of course.',
+            'DELETE' => array(
+                'description' => 'Warnung! Dangerous! Deletes every entry except the system entries < 699 from the dictionary.',
+                'request' => null,
+                'response' => null,
+            ),
         ),
         'entity' => array(
             'GET' => array(
@@ -396,76 +553,5 @@ Notes on paging:
             'description' => 'Entry in the dictionary. The id may not be changed (TODO check this!)',
         ),
         'description' => 'Create and manipulate entries in a given dictionary.',
-    ),
-    'wde\\V2\\Rest\\Changes\\Controller' => array(
-        'description' => 'Access to the change log entries stored for a particular entry in the dictionaries.',
-        'collection' => array(
-            'GET' => array(
-                'description' => 'Read only. The list size can be limited by passing pageSize. For a pageSize of more than 10 no entry before is returned as embedded result. Default pageSize is 25. For only getting the changes of a user pass a user paramter with the user name.',
-                'request' => null,
-                'response' => '{
-   "_links": {
-       "self": {
-           "href": "/dicts/:dict_name/entries/:entries_id/changes"
-       },
-       "first": {
-           "href": "/dicts/:dict_name/entries/:entries_id/changes?page={page}"
-       },
-       "prev": {
-           "href": "/dicts/:dict_name/entries/:entries_id/changes?page={page}"
-       },
-       "next": {
-           "href": "/dicts/:dict_name/entries/:entries_id/changes?page={page}"
-       },
-       "last": {
-           "href": "/dicts/:dict_name/entries/:entries_id/changes?page={page}"
-       }
-   }
-   "_embedded": {
-       "changes": [
-           {
-               "_links": {
-                   "self": {
-                       "href": "/dicts/:dict_name/entries/:entries_id/changes[/:changes_id]"
-                   }
-               }
-              "key": "Automatically generated sequence number of the save entry event.",
-              "user": "The user that saved the entry.",
-              "at": "The time at wich the entry was saved.",
-              "id": "The sid before the entry was updated. (Usually doesn\'t change.)",
-              "sid": "The sid before the entry was updated. (Might have changed.)",
-              "lemma": "The lemma before the entry was updated. (Might have changed.)",
-              "entry_before": "The entry <strong>before</strong> the possibly updated entry was saved by the user."
-           }
-       ]
-   }
-}',
-            ),
-            'description' => 'List of all chages to a particular entry.',
-        ),
-        'entity' => array(
-            'GET' => array(
-                'description' => 'Read only.',
-                'request' => null,
-                'response' => '{
-   "_links": {
-       "self": {
-           "href": "/dicts/:dict_name/entries/:entries_id/changes[/:changes_id]"
-       }
-   }
-   "key": "Automatically generated sequence number of the save entry event.",
-   "user": "The user that saved the entry.",
-   "at": "The time at wich the entry was saved.",
-   "id": "The sid before the entry was updated. (Usually doesn\'t change.)",
-   "sid": "The sid before the entry was updated. (Might have changed.)",
-   "lemma": "The lemma before the entry was updated. (Might have changed.)",
-   "entry_before": "The entry <strong>before</strong> the possibly updated entry was saved by the user."
-}',
-            ),
-            'description' => 'The entry before it was chaged at the time denoted by at by user.',
-        ),
-    ),
-    'wde\\V2\\Rest\\EntriesNdx\\Controller' => array(
-        'description' => 'Access and update the XPaths that are used when limiting the data returned on an entries GET using the ndx parameter.',
     ),
 );

@@ -86,10 +86,22 @@ class AccessCheckingTSResource extends TableSwitchingResource {
         if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
         return parent::update($id, $data);
     }
+    
+    public function patchList($data) {
+        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        if (true == $isNoAdmin = $this->checkHasNoRightToWrite()) { return $isNoAdmin; } // is an ApiProblem
+        return parent::patchList($data);
+    }
 
     public function delete($id) {          
         if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
         if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
         return parent::delete($id);
+    }
+    
+    public function deleteList($data) {          
+        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
+        return parent::deleteList($data);
     }
 }

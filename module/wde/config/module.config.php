@@ -93,6 +93,7 @@ return array(
             'collection_http_methods' => array(
                 0 => 'GET',
                 1 => 'POST',
+                2 => 'DELETE',
             ),
             'collection_query_whitelist' => array(
                 0 => 'lem',
@@ -726,7 +727,7 @@ return array(
                     'POST' => true,
                     'PATCH' => false,
                     'PUT' => false,
-                    'DELETE' => false,
+                    'DELETE' => true,
                 ),
             ),
             'wde\\V2\\Rest\\Users\\Controller' => array(
@@ -772,7 +773,7 @@ return array(
                 'collection' => array(
                     'GET' => true,
                     'POST' => true,
-                    'PATCH' => false,
+                    'PATCH' => true,
                     'PUT' => true,
                     'DELETE' => true,
                 ),

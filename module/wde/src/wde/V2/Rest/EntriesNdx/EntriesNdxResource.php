@@ -23,10 +23,11 @@ class EntriesNdxResource extends AccessCheckingTSResource {
     }
     
     public function patchList($data) {
-        parent::patchList($data);
+        return parent::patchList($data);
     }
     
     public function deleteList($data) {
-        parent::deleteList($data);
+        $data["id"] = $this->getEvent()->getRouteParam('entries_id');
+        return parent::deleteList($data);
     }
 }

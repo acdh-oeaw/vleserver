@@ -3,10 +3,15 @@
 namespace wde\V2\Rest\Entries;
 
 use wde\V2\Rest\Common\AccessCheckingTSResource;
+use Zend\Db\TableGateway\TableGatewayInterface as TableGateway;
 use wde\V2\Rest\Common\LimitedColumnTableGateway;
-use ZF\ApiProblem\ApiProblem;
 
 class EntriesResource extends AccessCheckingTSResource {
+
+    public function __construct(TableGateway $table, $identifierName, $collectionClass) {
+        $this->linkedTableExts = array('ndx', 'cow', 'lck');
+        parent::__construct($table, $identifierName, $collectionClass);
+    }
     
     public function fetchAll($data = array()) {
         parent::fetchAll($data);
@@ -27,6 +32,13 @@ class EntriesResource extends AccessCheckingTSResource {
     public function update($id, $data)
     {
         return parent::update($id, $data);
+    }
+    
+    public function deleteList($data) {
+        $data["id"] = 699;
+        $data["operator"] = '>';
+        $this->linkedTableExts = array('ndx');
+        return parent::deleteList($data);
     }
     
 }

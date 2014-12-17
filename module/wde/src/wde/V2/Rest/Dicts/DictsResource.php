@@ -4,10 +4,7 @@ namespace wde\V2\Rest\Dicts;
 use wde\V2\Rest\Dicts\DictsEntity;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Metadata\Metadata;
-use Zend\Db\Sql\Ddl\Column;
-use Zend\Db\Sql\Ddl\Constraint;
-use Zend\Db\Sql\Ddl\CreateTable;
-use Zend\Db\Sql\Ddl\DropTable;
+use Zend\Db\TableGateway\TableGateway;
 use Doctrine\DBAL\DriverManager;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZF\Rest\AbstractResourceListener;
@@ -166,6 +163,23 @@ class DictsResource extends AbstractResourceListener {
                 $this->sql->getAdapter()->query(
                         $query, \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);
             }
+            
+//            "INSERT INTO `" . $tablename . "`(`id`, `entry`) values(1, 'teiHeader')";
+//            "INSERT INTO `" . $tablename . "`(`id`, `entry`) values(5, 'front')";
+//            "INSERT INTO `" . $tablename . "`(`id`, `entry`) values(9, 'profile')";
+//            "INSERT INTO `" . $tablename . "`(`id`, `entry`) values(10, 'xslt')";
+//            "INSERT INTO `" . $tablename . "`(`id`, `entry`) values(20, 'schema')";
+            $dictUsersTable = new TableGateway($this->tableName, $this->sql->getAdapter());
+            if ($dictUsersTable->insert(array('id' => 1, 'entry' => 'teiHeader')) !== 1) 
+            { return new ApiProblem(500, 'Unable to initalize dictionary (teiHeader).'); }
+            if ($dictUsersTable->insert(array('id' => 5, 'entry' => 'front')) !== 1) 
+            { return new ApiProblem(500, 'Unable to initalize dictionary (front).'); }
+            if ($dictUsersTable->insert(array('id' => 9, 'entry' => 'profile')) !== 1) 
+            { return new ApiProblem(500, 'Unable to initalize dictionary (profile).'); }
+            if ($dictUsersTable->insert(array('id' => 10, 'entry' => 'xslt')) !== 1) 
+            { return new ApiProblem(500, 'Unable to initalize dictionary (xslt).'); }
+            if ($dictUsersTable->insert(array('id' => 20, 'entry' => 'schema')) !== 1) 
+            { return new ApiProblem(500, 'Unable to initalize dictionary (schema).'); }
         }
         return new DictsEntity(array(
             'name' => $data->name,

@@ -180,6 +180,28 @@ class DictsResource extends AbstractResourceListener {
             { return new ApiProblem(500, 'Unable to initalize dictionary (xslt).'); }
             if ($dictUsersTable->insert(array('id' => 20, 'entry' => 'schema')) !== 1) 
             { return new ApiProblem(500, 'Unable to initalize dictionary (schema).'); }
+            
+            switch (strtolower($driver[count($driver) - 1])) {
+                case 'mysqli':
+                case 'pdo_mysql':
+                    $query = "DELIMITER $$
+CREATE TRIGGER lockchecktrigger
+BEFORE INSERT ON $this->tableName"."_lck FOR EACH ROW
+BEGIN
+   DECLARE lastAt TIMESTAMP;
+   SELECT at INTO lastAt FROM $this->tableName"."_lck WHERE id = NEW.id ORDER BY at DESC;
+   IF(NEW.at) < (lastAt + 120) THEN
+     DECLARE unused INT;
+     SELECT `Cant get a lock.` INTO unused FROM $this->tableName"."_lck WHERE $this->tableName"."_lck.id=NEW.id
+   END IF; 
+END$$
+DELIMITER ;";
+//                    $this->sql->getAdapter()->query(
+//                        $query, \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);
+                    break;
+                default:
+                    return new ApiProblem(500, 'The lock insert trigger needs to be implemented for each kind of database');
+            }
         }
         return new DictsEntity(array(
             'name' => $data->name,
@@ -227,7 +249,7 @@ class DictsResource extends AbstractResourceListener {
         $table->getIndex('entry_fulltext')->addFlag('fulltext');
         $table->addOption('engine', 'MyISAM');
 
-// What exactly uses _lck?
+// What exactly uses _lck? Charly says unused.
         $lck_table = $schema->createTable($data->name . '_lck');
 //            $mysql = "CREATE TABLE IF NOT EXISTS `" . $data->name. "_lck` (" .
 //                            "`id` int(11) NOT NULL auto_increment," .
@@ -237,13 +259,22 @@ class DictsResource extends AbstractResourceListener {
 //                            "KEY `resp_ndx` (`resp`)," .
 //                            "KEY `dt_ndx` (`resp`)" .
 //                            ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=770";
-        $lck_table->addColumn('id', 'integer', array('notnull' => true, 'autoincrement' => true));
-        $lck_table->addColumn('resp', 'string', array('length' => 255, 'autoincrement' => true));
-        $lck_table->addColumn('dt', 'string', array('length' => 255, 'autoincrement' => true));
-        $lck_table->setPrimaryKey(array('id'));
-        $lck_table->addIndex(array('resp'));
-        $lck_table->addIndex(array('dt'));
-        $lck_table->addOption('engine', 'MyISAM');
+//        $lck_table->addColumn('id', 'integer', array('notnull' => true, 'autoincrement' => true));
+//        $lck_table->addColumn('resp', 'string', array('length' => 255, 'autoincrement' => true));
+//        $lck_table->addColumn('dt', 'string', array('length' => 255, 'autoincrement' => true));
+//        $lck_table->setPrimaryKey(array('id'));
+//        $lck_table->addIndex(array('resp'));
+//        $lck_table->addIndex(array('dt'));
+//        $lck_table->addOption('engine', 'MyISAM');
+        $lck_table->addColumn('key', 'integer', array('autoincrement', true));
+        $lck_table->addColumn('id', 'integer');
+        $lck_table->addColumn('user', 'string', array('length' => 100));
+        $lck_table->addColumn('at', 'datetime', array('default' => 'CURRENT_TIMESTAMP'));
+        $lck_table->getColumn('at')->setPlatformOption('version', true);        
+        $lck_table->setPrimaryKey(array('key'));
+        $lck_table->addIndex(array('user'));
+        $lck_table->addIndex(array('id'));
+        $lck_table->addOption('engine', 'InnoDB');
 
         $ndx_table = $schema->createTable($data->name . '_ndx');
 //            $mysql = "CREATE TABLE IF NOT EXISTS `" . $data->name . "_ndx` (" .
@@ -280,7 +311,6 @@ class DictsResource extends AbstractResourceListener {
         $cow_table->addColumn('id', 'integer');
         $cow_table->addColumn('sid', 'string', array('length' => 255));
         $cow_table->addColumn('lemma', 'string', array('length' => 255));
-//            Timestamp with current timestamp would be needed, not available -> DBAL
         $cow_table->addColumn('at', 'datetime', array('default' => 'CURRENT_TIMESTAMP'));
         $cow_table->getColumn('at')->setPlatformOption('version', true);
         $cow_table->addColumn('user', 'string', array('length' => 255));

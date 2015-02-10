@@ -101,6 +101,7 @@ return array(
                 2 => 'xpath',
                 3 => 'txt',
                 4 => 'pageSize',
+                5 => 'idRange',
             ),
             'page_size' => 25,
             'page_size_param' => 'pageSize',

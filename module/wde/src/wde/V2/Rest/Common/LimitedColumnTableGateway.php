@@ -4,6 +4,7 @@ namespace wde\V2\Rest\Common;
 use Zend\Paginator\Adapter\DbTableGateway;
 use Zend\Db\TableGateway\TableGatewayInterface;
 use Zend\Db\Sql\Predicate\PredicateInterface;
+use Zend\Db\Sql\Select;
 
 class LimitedColumnTableGateway extends DbTableGateway {
     
@@ -20,6 +21,27 @@ class LimitedColumnTableGateway extends DbTableGateway {
         if ($columns !== array()) {
             $this->select->columns($columns);
         }
+    }
+    
+    /**
+     * @param string $tableName
+     * @param string|Expression $onExpression
+     * @param mixed $columns
+     * @param mixed $selectJoinConst
+     * @return LimitedColumnTableGateway
+     */
+    public function join($tableName, $onExpression, $columns = array(), $selectJoinConst = Select::JOIN_INNER) {
+        $this->select->join($tableName, $onExpression, $columns, $selectJoinConst);
+        return $this;
+    }
+    
+    /** 
+     * @param array|string $group
+     * @return LimitedColumnTableGateway
+     */
+    public function group($group) {
+        $this->select->group($group);
+        return $this;
     }
 }
 

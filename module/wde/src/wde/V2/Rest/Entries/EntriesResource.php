@@ -17,7 +17,7 @@ class EntriesResource extends AccessCheckingTSResource {
     }
     
     public function fetchAll($data = array()) {
-        parent::fetchAll($data);
+        if (($tryGetAccessAndSwitchTable = parent::fetchAll($data)) instanceof ApiProblem) { return $tryGetAccessAndSwitchTable; }
         $explicitPageSize = $this->getEvent()->getRequest()->getQuery('pageSize');
         $filter = new Where();
         $join = null;

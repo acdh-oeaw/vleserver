@@ -167,9 +167,11 @@ return array(
                 1 => 'DELETE',
                 2 => 'PATCH',
             ),
-            'collection_query_whitelist' => array(),
+            'collection_query_whitelist' => array(
+                0 => 'pageSize',
+            ),
             'page_size' => 25,
-            'page_size_param' => null,
+            'page_size_param' => 'pageSize',
             'entity_class' => 'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxEntity',
             'collection_class' => 'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxCollection',
             'service_name' => 'entries_ndx',

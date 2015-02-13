@@ -11,8 +11,7 @@ class AccessCheckingTSResource extends TableSwitchingResource {
     
     /** @var string */
     protected $mainTableName;
-
-
+    
     /**
      * @return boolean Whether the user is an admin user.
      */
@@ -83,13 +82,19 @@ class AccessCheckingTSResource extends TableSwitchingResource {
 
     public function update($id, $data) {          
         if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
-        if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
+        if (true == $canNotWrite = $this->checkHasNoRightToWrite()) { return $canNotWrite; } // is an ApiProblem
         return parent::update($id, $data);
+    }
+    
+    public function patch($id, $data) {          
+        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        if (true == $canNotWrite = $this->checkHasNoRightToWrite()) { return $canNotWrite; } // is an ApiProblem
+        return parent::patch($id, $data);
     }
     
     public function patchList($data) {
         if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
-        if (true == $isNoAdmin = $this->checkHasNoRightToWrite()) { return $isNoAdmin; } // is an ApiProblem
+        if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
         return parent::patchList($data);
     }
 

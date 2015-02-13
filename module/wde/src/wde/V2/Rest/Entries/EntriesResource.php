@@ -10,7 +10,9 @@ use Zend\Db\Sql\Expression;
 use ZF\ApiProblem\ApiProblem;
 
 class EntriesResource extends AccessCheckingTSResource {
-
+    /** @var boolean */
+    protected $isUpdatingDontSetLock = false;
+    
     public function __construct(TableGateway $table, $identifierName, $collectionClass) {
         $this->linkedTableExts = array('ndx', 'cow', 'lck');
         parent::__construct($table, $identifierName, $collectionClass);
@@ -56,7 +58,7 @@ class EntriesResource extends AccessCheckingTSResource {
                     }
                     // processed above
                     break;
-                    
+                   
             }
         }
         if ($explicitPageSize !== null && $explicitPageSize <= 10) {
@@ -67,8 +69,23 @@ class EntriesResource extends AccessCheckingTSResource {
         if (isset($join)) {
             $adapter->join($join['tableName'], $join['onExpression'])
                     ->group($join['groupBy']);
-        }
+        } 
         return new EntriesCollection($adapter);
+    }
+    
+    public function fetch($id) {
+        $ret = parent::fetch($id);
+        if (($ret['locked'] === '') && !$this->isUpdatingDontSetLock) {
+            $ret['locked'] = $this->getIdentity()->getAuthenticationIdentity()['username'];
+            if (($trylock = parent::update($id, $ret)) instanceof ApiProblem) {
+                if ($tryLock->status !== 403) {
+                    return $trylock;
+                } else {
+                    $ret['locked'] = '';
+                }
+            }
+        }
+        return $ret;
     }
 
     public function create($data)
@@ -76,9 +93,27 @@ class EntriesResource extends AccessCheckingTSResource {
         return parent::create($data);
     }
 
-    public function update($id, $data)
-    {
+    public function update($id, $data) {
+        if (($current = parent::fetch($id)) instanceof ApiProblem) {return $current;}
+        if (!$this->isUpdatingDontSetLock) {$data->locked = $this->getIdentity()->getAuthenticationIdentity()['username'];};
+        if ($current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username']) {
+            return new ApiProblem(409, "Conflict, you don't own the lock!");
+        }
         return parent::update($id, $data);
+    }
+    
+    public function patch($id, $data) {
+        if (($current = parent::fetch($id)) instanceof ApiProblem) {return $current;}
+        if ($data->locked !== '') {
+            $data->locked = $this->getIdentity()->getAuthenticationIdentity()['username'];
+        }
+        if ($current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username']) {
+            return new ApiProblem(409, "Conflict, you don't own the lock!");
+        }
+        $this->isUpdatingDontSetLock = true;
+        $ret = parent::patch($id, $data);
+        $this->isUpdatingDontSetLock = false;
+        return $ret;
     }
     
     public function deleteList($data) {

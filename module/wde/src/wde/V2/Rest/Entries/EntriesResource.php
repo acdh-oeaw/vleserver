@@ -69,13 +69,14 @@ class EntriesResource extends AccessCheckingTSResource {
         if (isset($join)) {
             $adapter->join($join['tableName'], $join['onExpression'])
                     ->group($join['groupBy']);
-        } 
+        }      
         return new EntriesCollection($adapter);
     }
     
     public function fetch($id) {
         $ret = parent::fetch($id);
-        if (($ret['locked'] === '') && !$this->isUpdatingDontSetLock) {
+        $doLock = (bool)$this->getEvent()->getQueryParam('lock');
+        if ($doLock && ($ret['locked'] === '') && !$this->isUpdatingDontSetLock) {
             $ret['locked'] = $this->getIdentity()->getAuthenticationIdentity()['username'];
             if (($trylock = parent::update($id, $ret)) instanceof ApiProblem) {
                 if ($tryLock->status !== 403) {
@@ -96,7 +97,8 @@ class EntriesResource extends AccessCheckingTSResource {
     public function update($id, $data) {
         if (($current = parent::fetch($id)) instanceof ApiProblem) {return $current;}
         if (!$this->isUpdatingDontSetLock) {$data->locked = $this->getIdentity()->getAuthenticationIdentity()['username'];};
-        if ($current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username']) {
+        if (!$this->isUpdatingDontSetLock &&
+            $current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username']) {
             return new ApiProblem(409, "Conflict, you don't own the lock!");
         }
         return parent::update($id, $data);
@@ -107,7 +109,8 @@ class EntriesResource extends AccessCheckingTSResource {
         if ($data->locked !== '') {
             $data->locked = $this->getIdentity()->getAuthenticationIdentity()['username'];
         }
-        if ($current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username']) {
+        if ($current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username'] &&
+            !($this->isAdmin() && ($data->locked === ''))) {
             return new ApiProblem(409, "Conflict, you don't own the lock!");
         }
         $this->isUpdatingDontSetLock = true;

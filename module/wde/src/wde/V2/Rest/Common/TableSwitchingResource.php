@@ -22,21 +22,31 @@ class TableSwitchingResource extends DbConnectedResource {
      /** @var array(TableGateway) */
     protected $linkedTableGateways;   
     
-    protected function switchTable() {
-        $this->table->getSql()->setTable($this->realTableName);
-        $this->realTableGateway = new TableGateway($this->realTableName,
-                $this->table->getAdapter(),
-                $this->table->getFeatureSet(),
-                $this->table->getResultSetPrototype(),
-                $this->table->getSql());
+    protected function switchTable($table = null, $realTableName = null) {
+        $instanceSetup = false;
+        if (!isset($table)){
+            $table = $this->table;
+            $realTableName = $this->realTableName;
+            $instanceSetup = true;
+        } 
+        $table->getSql()->setTable($realTableName);
+        $realTableGateway = new TableGateway($realTableName,
+                $table->getAdapter(),
+                $table->getFeatureSet(),
+                $table->getResultSetPrototype(),
+                $table->getSql());
+        if ($instanceSetup) {
         $this->linkedTableGateways = array();
-        if (isset($this->linkedTableExts)) {
-            foreach ($this->linkedTableExts as $ext) {
-                $sql = new Sql($this->table->getSql()->getAdapter(), $this->realTableName . '_' . $ext, $this->table->getSql()->getSqlPlatform());
-                $this->linkedTableGateways[$ext] = new TableGateway($this->realTableName . '_' . $ext, $this->table->getAdapter(), $this->table->getFeatureSet(), $this->table->getResultSetPrototype(), $sql);
+            if (isset($this->linkedTableExts)) {
+                foreach ($this->linkedTableExts as $ext) {
+                    $sql = new Sql($this->table->getSql()->getAdapter(), $realTableName . '_' . $ext, $this->table->getSql()->getSqlPlatform());
+                    $this->linkedTableGateways[$ext] = new TableGateway($realTableName . '_' . $ext, $this->table->getAdapter(), $this->table->getFeatureSet(), $this->table->getResultSetPrototype(), $sql);
+                }
             }
+            $this->realTableGateway = $realTableGateway;
+            $this->table = $this->realTableGateway;
         }
-        $this->table = $this->realTableGateway;
+        return $realTableGateway;
     }
     
     public function patchList($data) {

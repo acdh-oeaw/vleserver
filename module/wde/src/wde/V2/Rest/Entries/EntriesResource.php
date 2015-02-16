@@ -44,7 +44,11 @@ class EntriesResource extends AccessCheckingTSResource {
                     $join['tableName'] = "$ndxTable";
                     $join['onExpression'] = "$this->realTableName.id = $ndxTable.id";
                     $join['groupBy'] = "$this->realTableName.id";
-                    $filter->like("$ndxTable.xpath", "%$value%");
+                    if (strpos($value, '%') !== false) {
+                        $filter->like("$ndxTable.xpath", "$value");
+                    } else {
+                        $filter->like("$ndxTable.xpath", "%$value%");
+                    }
                     if (isset($data['txt'])) {
                       //XPath contains txt
                       $filter->AND->equalTo("$ndxTable.txt", $data['txt']);
@@ -74,7 +78,7 @@ class EntriesResource extends AccessCheckingTSResource {
     }
     
     public function fetch($id) {
-        $ret = parent::fetch($id);
+        if (($ret = parent::fetch($id)) instanceof ApiProblem) {return $ret;}
         $doLock = (bool)$this->getEvent()->getQueryParam('lock');
         if ($doLock && ($ret['locked'] === '') && !$this->isUpdatingDontSetLock) {
             $ret['locked'] = $this->getIdentity()->getAuthenticationIdentity()['username'];

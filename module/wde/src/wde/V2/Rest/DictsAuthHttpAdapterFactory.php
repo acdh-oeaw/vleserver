@@ -64,7 +64,10 @@ class DictsAuthHttpAdapterFactory implements FactoryInterface
         
         
         if (in_array('basic', $httpConfig['accept_schemes']) && isset($httpConfig['htpasswd'])) {
-            $httpAdapter->setBasicResolver(new DictsDictUsersBasicAuth($adapter));
+            try {
+                $dictsDictUsersBasicAuth = new DictsDictUsersBasicAuth($adapter);
+                $httpAdapter->setBasicResolver($dictsDictUsersBasicAuth);
+            } catch (\Zend\Db\Adapter\Exception\ErrorException $e) {}
         }
 
 //        if (in_array('digest', $httpConfig['accept_schemes']) && isset($httpConfig['htdigest'])) {

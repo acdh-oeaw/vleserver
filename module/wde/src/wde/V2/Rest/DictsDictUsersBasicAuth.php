@@ -9,6 +9,7 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Metadata\Metadata;
+use Zend\Db\Adapter\Exception\ErrorException as DbError;
 
 class DictsDictUsersBasicAuth implements ResolverInterface
 {
@@ -64,11 +65,15 @@ class DictsDictUsersBasicAuth implements ResolverInterface
         if (in_array('dict_users', $tableNames)) {
             $testAnyUsers = $this->table->select();
             if ($testAnyUsers->count() > 0) {
-                $resultSet = $this->table->select(function (Select $select) use ($username, $password) {
-                    $select
-                    ->where->equalTo('userID', $username)
-                    ->where->equalTo('pw', $password);
-                });
+                try {
+                    $resultSet = $this->table->select(function (Select $select) use ($username, $password) {
+                        $select
+                        ->where->equalTo('userID', $username)
+                        ->where->equalTo('pw', $password);
+                    });
+                } catch (DbError $e) {
+                    return new AuthResult(AuthResult::FAILURE_CREDENTIAL_INVALID, null, array('Database unaccessible!'));
+                }
             } else {
                 $resultSet = $this->getDefaultDictUsersAuthorization();
             }

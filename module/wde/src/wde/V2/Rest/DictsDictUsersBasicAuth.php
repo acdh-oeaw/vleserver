@@ -9,7 +9,6 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Metadata\Metadata;
-use Zend\Db\Adapter\Exception\ErrorException as DbError;
 
 class DictsDictUsersBasicAuth implements ResolverInterface
 {
@@ -18,13 +17,9 @@ class DictsDictUsersBasicAuth implements ResolverInterface
     protected $metadata;
     
     public function __construct(AdapterInterface $adapter) {
-        if (isset($adapter)) {           
-        try {
+        if (isset($adapter)) {
             $this->metadata = new Metadata($adapter);
             $this->table = new TableGateway('dict_users', $adapter);
-        } catch (DbError $e) {
-            return new AuthResult(AuthResult::FAILURE_CREDENTIAL_INVALID, null, array('Database unaccessible!'));
-        }
         }
     }
     

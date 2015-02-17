@@ -18,9 +18,13 @@ class DictsDictUsersBasicAuth implements ResolverInterface
     protected $metadata;
     
     public function __construct(AdapterInterface $adapter) {
-        if (isset($adapter)) {
-          $this->metadata = new Metadata($adapter);
-          $this->table = new TableGateway('dict_users', $adapter);
+        if (isset($adapter)) {           
+        try {
+            $this->metadata = new Metadata($adapter);
+            $this->table = new TableGateway('dict_users', $adapter);
+        } catch (DbError $e) {
+            return new AuthResult(AuthResult::FAILURE_CREDENTIAL_INVALID, null, array('Database unaccessible!'));
+        }
         }
     }
     
@@ -65,15 +69,11 @@ class DictsDictUsersBasicAuth implements ResolverInterface
         if (in_array('dict_users', $tableNames)) {
             $testAnyUsers = $this->table->select();
             if ($testAnyUsers->count() > 0) {
-                try {
-                    $resultSet = $this->table->select(function (Select $select) use ($username, $password) {
-                        $select
-                        ->where->equalTo('userID', $username)
-                        ->where->equalTo('pw', $password);
-                    });
-                } catch (DbError $e) {
-                    return new AuthResult(AuthResult::FAILURE_CREDENTIAL_INVALID, null, array('Database unaccessible!'));
-                }
+                $resultSet = $this->table->select(function (Select $select) use ($username, $password) {
+                    $select
+                    ->where->equalTo('userID', $username)
+                    ->where->equalTo('pw', $password);
+                });
             } else {
                 $resultSet = $this->getDefaultDictUsersAuthorization();
             }

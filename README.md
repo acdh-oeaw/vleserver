@@ -5,20 +5,13 @@ Requirements
 ------------
   
 Please see the [composer.json](composer.json) file.
+Two fixes are needed to make vendor supplied library stuff work as expected:
 To edit the docs when using apigility 1.0.4(+?) hotfix/226 is needed for rest service doc.
-If not applied all attempts to edit the docs will DELETE them!+
-The relevant part is
-```php
-    protected function getServiceType($service)
-    {
-        if (strstr($service, '\\Rest\\')
-            || strstr($service, '-Rest-')) {
-            return 'rest';
-        }
-        return 'rpc';
-    }
-```
-Starting at line 737 in vendor/zf-campus/zf-apigility-admin/Module.php.
+If not applied all attempts to edit the docs will DELETE them!
+DBAL pretends it's unable to create MySQL Fulltext fields, but it actually can.
+Please apply the vle-api-vendor.patch using
+
+patch -p1 < vle-api-vendor.patch
 
 Installation
 ------------

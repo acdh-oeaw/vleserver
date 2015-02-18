@@ -76,13 +76,18 @@ class DictsAuthHttpAdapterFactory implements FactoryInterface
 
         return $httpAdapter;        
     }
-            
+    
     protected function getAdapterFromConfig(array $config, ServiceLocatorInterface $services)
     {
         if (isset($config['adapter_name'])
             && $services->has($config['adapter_name'])
         ) {
+          try {
             return $services->get($config['adapter_name']);
+          } catch (\Zend\ServiceManager\Exception\ServiceNotCreatedException $e) {
+                if (!$e->getPrevious()->getPrevious() instanceof \Zend\Db\Adapter\Exception\InvalidArgumentException)
+                    throw $e; 
+          }
         }
 
         return $services->get('Zend\Db\Adapter\Adapter');

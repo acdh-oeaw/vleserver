@@ -16,6 +16,7 @@ class AccessCheckingTSResource extends TableSwitchingResource {
      * @return boolean Whether the user is an admin user.
      */
     protected function isAdmin() {
+        $this->initTableNameAndTablesWithAuth();
         return (in_array($this->mainTableName, $this->tablesWithAuth) &&
                 ($this->getIdentity()->getAuthenticationIdentity()[$this->mainTableName]['write'] === true) &&
                 ($this->getIdentity()->getAuthenticationIdentity()[$this->mainTableName]['writeown'] === false));
@@ -24,6 +25,7 @@ class AccessCheckingTSResource extends TableSwitchingResource {
      * @return boolean Whether the user has the right to write.
      */
     protected function hasRightToWrite() {
+        $this->initTableNameAndTablesWithAuth();
         return (in_array($this->mainTableName, $this->tablesWithAuth) &&
                 ($this->getIdentity()->getAuthenticationIdentity()[$this->mainTableName]['write'] === true));
     }    
@@ -31,15 +33,15 @@ class AccessCheckingTSResource extends TableSwitchingResource {
      * @return boolean Whether the user has the right to write.
      */
     protected function hasRightToRead() {
+        $this->initTableNameAndTablesWithAuth();
         return (in_array($this->mainTableName, $this->tablesWithAuth) &&
                 ($this->getIdentity()->getAuthenticationIdentity()[$this->mainTableName]['read'] === true));
     }
     
     protected function switchToTableInRouteIfExistsAndUserAuthorized() {
-        $this->mainTableName = $this->event->getRouteParam('dict_name');
+        $this->initTableNameAndTablesWithAuth();
         $this->realTableName = $this->mainTableName .
-                               $this->realTableNameExtension;        
-        $this->tablesWithAuth = array_keys($this->getIdentity()->getAuthenticationIdentity());
+                               $this->realTableNameExtension;
         if ($this->mainTableName === 'dict_users') {
             return new ApiProblem(404, 'Item not found');
         }
@@ -48,6 +50,11 @@ class AccessCheckingTSResource extends TableSwitchingResource {
             return false;
         }        
         return new ApiProblem(403, 'Not allowed. You are not authorized for this dictionary.');
+    }
+    
+    protected function initTableNameAndTablesWithAuth() {
+        $this->mainTableName = $this->event->getRouteParam('dict_name');        
+        $this->tablesWithAuth = array_keys($this->getIdentity()->getAuthenticationIdentity());        
     }
     
     protected function checkHasNoRightToWrite() {     

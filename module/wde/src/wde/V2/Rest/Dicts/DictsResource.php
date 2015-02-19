@@ -276,7 +276,7 @@ DELIMITER ;";
 //        $lck_table->addIndex(array('resp'));
 //        $lck_table->addIndex(array('dt'));
 //        $lck_table->addOption('engine', 'MyISAM');
-        $lck_table->addColumn('key', 'integer', array('autoincrement', true));
+        $lck_table->addColumn('key', 'integer', array('autoincrement' => true, 'notnull' => true));
         $lck_table->addColumn('id', 'integer');
         $lck_table->addColumn('user', 'string', array('length' => 100));
         $lck_table->addColumn('at', 'datetime', array('default' => 'CURRENT_TIMESTAMP'));
@@ -317,7 +317,7 @@ DELIMITER ;";
 //  `lemma` varchar(255) NOT NULL,
 //  PRIMARY KEY (`key`)
 //) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=0 ;"
-        $cow_table->addColumn('key', 'integer', array('autoincrement', true));
+        $cow_table->addColumn('key', 'integer', array('autoincrement' => true, 'notnull' => true));
         $cow_table->addColumn('id', 'integer');
         $cow_table->addColumn('sid', 'string', array('length' => 255));
         $cow_table->addColumn('lemma', 'string', array('length' => 255));

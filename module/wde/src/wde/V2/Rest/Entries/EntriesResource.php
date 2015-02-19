@@ -12,6 +12,8 @@ use ZF\ApiProblem\ApiProblem;
 class EntriesResource extends AccessCheckingTSResource {
     /** @var boolean */
     protected $isUpdatingDontSetLock = false;
+    /** @var boolean */
+    protected $doCopyOnWrite = true;
     
     public function __construct(TableGateway $table, $identifierName, $collectionClass) {
         $this->linkedTableExts = array('ndx', 'cow', 'lck');
@@ -105,7 +107,26 @@ class EntriesResource extends AccessCheckingTSResource {
             $current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username']) {
             return new ApiProblem(409, "Conflict, you don't own the lock!");
         }
+        if (($backupCreated = $this->saveOnWrite($id)) !== true) { return $backupCreated; } // is an ApiProblem
         return parent::update($id, $data);
+    }
+    
+    protected function saveOnWrite($id) {
+        if ($this->doCopyOnWrite) {
+            $current = $this->fetch($id);
+            $cowTable = $this->linkedTableGateways['cow'];
+            $rowsAffected = $cowTable->insert(array(
+                    'user' => $this->getIdentity()->getAuthenticationIdentity()['username'],
+                    'id' => $current['id'],
+                    'sid' => $current['sid'],
+                    'lemma' => $current['lemma'],
+                    'entry_before' => $current['entry'],
+            ));
+            if ($rowsAffected != 1) {
+                return new ApiProblem(500, "Couldn't create backup copy!");
+            }
+        }
+        return true;
     }
     
     public function patch($id, $data) {
@@ -117,9 +138,11 @@ class EntriesResource extends AccessCheckingTSResource {
             !($this->isAdmin() && ($data->locked === ''))) {
             return new ApiProblem(409, "Conflict, you don't own the lock!");
         }
+        $this->doCopyOnWrite = $data->locked !== '';
         $this->isUpdatingDontSetLock = true;
         $ret = parent::patch($id, $data);
         $this->isUpdatingDontSetLock = false;
+        $this->doCopyOnWrite = true;
         return $ret;
     }
     
@@ -130,5 +153,11 @@ class EntriesResource extends AccessCheckingTSResource {
         return parent::deleteList($data);
     }
     
+    public function delete($id) {
+//        if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
+        if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
+        if (($backupCreated = $this->saveOnWrite($id)) !== true) { return $backupCreated; } // is an ApiProblem
+        return parent::delete($id);
+    }
 }
 

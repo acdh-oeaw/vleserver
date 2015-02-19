@@ -65,7 +65,7 @@ class TableSwitchingResource extends DbConnectedResource {
     }
     
     public function deleteList($data) {
-        if ($data["operator"] === '>') {
+        if (isset($data["operator"]) && ($data["operator"] === '>')) {
             $where = new Where();
             $where->greaterThan('id', $data["id"]);
             $item = $this->table->delete($where);

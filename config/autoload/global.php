@@ -7,7 +7,11 @@ return array(
                     'buffer_results' => true,
                 ),
             ),
-            'MySQLWDETest' => array(),
+            'MySQLWDETest' => array(
+                'options' => array(
+                    'buffer_results' => true,
+                ),
+            ),
             'MySQLOEWB' => array(
                 'options' => array(
                     'buffer_results' => true,

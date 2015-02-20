@@ -34,7 +34,7 @@ class ChangesResource extends AccessCheckingTSResource {
     
     public function fetch($id) {
         $ret = parent::fetch($id);
-        if ($ret['id'] !== (int)$this->getEvent()->getRouteParam('entries_id')) {
+        if ((int)$ret['id'] !== (int)$this->getEvent()->getRouteParam('entries_id')) {
             return new ApiProblem(500, 'Database is inconsistent!');
         }
         return $ret;

@@ -129,11 +129,26 @@ class EntriesResource extends AccessCheckingTSResource {
         return true;
     }
     
+    protected function retrieveData($data) {
+        $data = (array)$data;
+        $locked = $data['locked'];
+        // filters field 'locked' so its set to empty
+        $ret = parent::retrieveData($data);
+        // restore the lock (if appropriate)
+        if ($locked === $this->getIdentity()->getAuthenticationIdentity()['username']) {
+            $ret['locked'] = $this->getIdentity()->getAuthenticationIdentity()['username'];
+        }
+        return $ret;
+    }
+    
     public function patch($id, $data) {
         if (($current = parent::fetch($id)) instanceof ApiProblem) {return $current;}
         if ($data->locked !== '') {
             $data->locked = $this->getIdentity()->getAuthenticationIdentity()['username'];
         }
+        if (($current['locked'] === '') && ($data->locked === '')) {
+            return new ApiProblem(412, "The entry isn't locked!");
+        } 
         if ($current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username'] &&
             !($this->isAdmin() && ($data->locked === ''))) {
             return new ApiProblem(409, "Conflict, you don't own the lock!");

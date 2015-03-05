@@ -64,7 +64,10 @@ class DictsAuthHttpAdapterFactory implements FactoryInterface
         
         
         if (in_array('basic', $httpConfig['accept_schemes']) && isset($httpConfig['htpasswd'])) {
-            $httpAdapter->setBasicResolver(new DictsDictUsersBasicAuth($adapter));
+            try {
+                $dictsDictUsersBasicAuth = new DictsDictUsersBasicAuth($adapter);
+                $httpAdapter->setBasicResolver($dictsDictUsersBasicAuth);
+            } catch (\Exception $e) {/* actually \Zend\Db\Adapter\Exception\ErrorException due to db access problems*/}
         }
 
 //        if (in_array('digest', $httpConfig['accept_schemes']) && isset($httpConfig['htdigest'])) {
@@ -73,13 +76,18 @@ class DictsAuthHttpAdapterFactory implements FactoryInterface
 
         return $httpAdapter;        
     }
-            
+    
     protected function getAdapterFromConfig(array $config, ServiceLocatorInterface $services)
     {
         if (isset($config['adapter_name'])
             && $services->has($config['adapter_name'])
         ) {
+          try {
             return $services->get($config['adapter_name']);
+          } catch (\Zend\ServiceManager\Exception\ServiceNotCreatedException $e) {
+                if (!$e->getPrevious()->getPrevious() instanceof \Zend\Db\Adapter\Exception\InvalidArgumentException)
+                    throw $e; 
+          }
         }
 
         return $services->get('Zend\Db\Adapter\Adapter');

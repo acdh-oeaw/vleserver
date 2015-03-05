@@ -41,6 +41,7 @@ class EntriesResource extends AccessCheckingTSResource {
                     $filter->like('lemma', $value);
                     break;
                 case 'xpath':
+                    $value = str_replace('*', '%', $value);
                     $ndxTable = $this->realTableName . '_ndx';
                     $join = array();
                     $join['tableName'] = "$ndxTable";
@@ -59,8 +60,10 @@ class EntriesResource extends AccessCheckingTSResource {
                     }
                     break;
                 case 'txt':
+                    $value = str_replace('*', '%', $value);
                     if (!isset($data['xpath'])) {
-                        return new ApiProblem(412, 'You need to have both a text and an XPath to search in.');
+                        //search for every occurence as text regardless of the xpath
+                        $filter->like("$ndxTable.txt", "$value"); 
                     }
                     // processed above
                     break;

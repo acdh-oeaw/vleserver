@@ -97,7 +97,9 @@ class UsersResource extends DbConnectedResource {
                 if (!$this->isAdmin()) {
                     return new ApiProblem(403, 'You need to be an admin user to do this.');
                 }
-                if ($data->table === 'dict_users' && in_array('dict_users', $this->tablesWithAuth)) {
+                if (($data->table === 'dict_users') &&
+                    in_array('dict_users', $this->tablesWithAuth) &&
+                    $data->userID === $this->getIdentity()->getName()) {
                     return new ApiProblem(403, 'You are already an admin user.');
                 }
                 $existsCheck = $this->table->select(array(

@@ -16,10 +16,11 @@ class DictsDictUsersBasicAuth implements ResolverInterface
     
     protected $metadata;
     
-    public function __construct(AdapterInterface $adapter) {
+    /** @param AdapterInterface|null $adapter */
+    public function __construct($adapter) {
         if (isset($adapter)) {
-          $this->metadata = new Metadata($adapter);
-          $this->table = new TableGateway('dict_users', $adapter);
+            $this->metadata = new Metadata($adapter);
+            $this->table = new TableGateway('dict_users', $adapter);
         }
     }
     

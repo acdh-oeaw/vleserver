@@ -139,10 +139,7 @@ class DictsResource extends AbstractResourceListener {
         if (in_array($data->name, $allTableNames)) {
             return new ApiProblem(409, 'Dictionary already exists');
         } else if ($data->name === 'dict_users') {
-          
-            $driver = $this->sql->getAdapter()->getPlatform()->getName();
-            $driver = explode('\\', get_class($this->sql->getAdapter()->getDriver()));
-            $conn = DriverManager::getConnection(array('driver' => strtolower($driver[count($driver) - 1])));
+            $conn = $this->getDBALConnection();
             $query = $this->getUserTableSchema()->toSql($conn->getDatabasePlatform());
             
             $this->sql->getAdapter()->query($query[0],
@@ -155,8 +152,7 @@ class DictsResource extends AbstractResourceListener {
                 return new ApiProblem(403, 'You are not authorized to create this dictionary');
             }
           
-            $driver = explode('\\', get_class($this->sql->getAdapter()->getDriver()));
-            $conn = DriverManager::getConnection(array('driver' => strtolower($driver[count($driver) - 1])));
+            $conn = $this->getDBALConnection();
             $queries = $this->getSchema($data)->toSql($conn->getDatabasePlatform());            
             
             foreach ($queries as $query) {
@@ -181,7 +177,7 @@ class DictsResource extends AbstractResourceListener {
             if ($dictUsersTable->insert(array('id' => 20, 'entry' => 'schema')) !== 1) 
             { return new ApiProblem(500, 'Unable to initalize dictionary (schema).'); }
             
-            switch (strtolower($driver[count($driver) - 1])) {
+            switch ($conn->getDriver()->getName()) {
                 case 'mysqli':
                 case 'pdo_mysql':
                     $query = "DELIMITER $$
@@ -206,6 +202,20 @@ DELIMITER ;";
         return new DictsEntity(array(
             'name' => $data->name,
         ));
+    }
+    
+    /**  @return \Doctrine\DBAL\Connection */
+    private function getDBALConnection() {
+            // Hack: works with mysqli and pdo_mysql
+            $driver = $this->sql->getAdapter()->getPlatform()->getName();
+            $driverFramework = explode('\\', get_class($this->sql->getAdapter()->getDriver()));
+            $driverFramework = strtolower($driverFramework[count($driverFramework) - 1]);
+            if ($driverFramework === 'pdo') {
+                $driver = 'pdo_' . strtolower($driver);
+            } else {
+                $driver = $driverFramework;
+            } 
+            return DriverManager::getConnection(array('driver' => $driver));        
     }
     
     protected function getSchema($data) {
@@ -266,7 +276,7 @@ DELIMITER ;";
 //        $lck_table->addIndex(array('resp'));
 //        $lck_table->addIndex(array('dt'));
 //        $lck_table->addOption('engine', 'MyISAM');
-        $lck_table->addColumn('key', 'integer', array('autoincrement', true));
+        $lck_table->addColumn('key', 'integer', array('autoincrement' => true, 'notnull' => true));
         $lck_table->addColumn('id', 'integer');
         $lck_table->addColumn('user', 'string', array('length' => 100));
         $lck_table->addColumn('at', 'datetime', array('default' => 'CURRENT_TIMESTAMP'));
@@ -307,7 +317,7 @@ DELIMITER ;";
 //  `lemma` varchar(255) NOT NULL,
 //  PRIMARY KEY (`key`)
 //) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=0 ;"
-        $cow_table->addColumn('key', 'integer', array('autoincrement', true));
+        $cow_table->addColumn('key', 'integer', array('autoincrement' => true, 'notnull' => true));
         $cow_table->addColumn('id', 'integer');
         $cow_table->addColumn('sid', 'string', array('length' => 255));
         $cow_table->addColumn('lemma', 'string', array('length' => 255));
@@ -383,8 +393,7 @@ DELIMITER ;";
           $schema = $this->getSchema($data);  
         }
         
-        $driver = explode('\\', get_class($this->sql->getAdapter()->getDriver()));
-        $conn = DriverManager::getConnection(array('driver' => strtolower($driver[count($driver) - 1])));
+        $conn = $this->getDBALConnection();
         $queries = $schema->toDropSql($conn->getDatabasePlatform());
 
         foreach ($queries as $query) {

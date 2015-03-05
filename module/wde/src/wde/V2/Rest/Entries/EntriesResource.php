@@ -15,6 +15,13 @@ class EntriesResource extends AccessCheckingTSResource {
     /** @var boolean */
     protected $doCopyOnWrite = true;
     
+    private function charlyEncode($string) {
+        $convmap = array(0xFF, 0x2FFFF, 0, 0xFFFF);
+        $semicolMasked = str_replace(';', '.,', $string);
+        $htmlEncoded = mb_encode_numericentity($semicolMasked, $convmap, 'UTF-8');
+        return str_replace('.,', ';', str_replace(';', '#9#', str_replace('&#', '#8#', $htmlEncoded)));
+    }
+            
     public function __construct(TableGateway $table, $identifierName, $collectionClass) {
         $this->linkedTableExts = array('ndx', 'cow', 'lck');
         parent::__construct($table, $identifierName, $collectionClass);
@@ -54,7 +61,12 @@ class EntriesResource extends AccessCheckingTSResource {
                     }
                     if (isset($data['txt'])) {
                       //XPath contains txt
-                      $filter->AND->equalTo("$ndxTable.txt", str_replace('*', '%', $data['txt']));
+                      $txtValue = str_replace('*', '%', $data['txt']);
+                      $filter->AND
+                              ->NEST
+                                ->like("$ndxTable.txt", $txtValue)
+                                ->OR->like("$ndxTable.txt", $this->charlyEncode($txtValue))
+                              ->UNNESST;
                     } else { 
                       //XPath exists 
                     }
@@ -68,7 +80,8 @@ class EntriesResource extends AccessCheckingTSResource {
                         $join['tableName'] = "$ndxTable";
                         $join['onExpression'] = "$this->realTableName.id = $ndxTable.id";
                         $join['groupBy'] = "$this->realTableName.id";
-                        $filter->like("$ndxTable.txt", "$value"); 
+                        $filter->like("$ndxTable.txt", "$value");
+                        $filter->OR->like("$ndxTable.txt", $this->charlyEncode($value));
                     }
                     // processed above
                     break;

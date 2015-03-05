@@ -300,7 +300,7 @@ return array(
     'zf-apigility' => array(
         'db-connected' => array(
             'wde\\V2\\Rest\\Dicts\\DictsResource' => array(
-                'adapter_name' => 'MySQLWDETest',
+                'adapter_name' => 'MySQLWDE',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Dicts\\Controller',
@@ -308,7 +308,7 @@ return array(
                 'table_service' => 'wde\\V2\\Rest\\Dicts\\DictsResource',
             ),
             'wde\\V2\\Rest\\Entries\\EntriesResource' => array(
-                'adapter_name' => 'MySQLWDETest',
+                'adapter_name' => 'MySQLWDE',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Entries\\Controller',
@@ -317,7 +317,7 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Entries\\EntriesResource',
             ),
             'wde\\V2\\Rest\\Users\\UsersResource' => array(
-                'adapter_name' => 'MySQLWDETest',
+                'adapter_name' => 'MySQLWDE',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Users\\Controller',
@@ -326,7 +326,7 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Users\\UsersResource',
             ),
             'wde\\V2\\Rest\\Changes\\ChangesResource' => array(
-                'adapter_name' => 'MySQLWDETest',
+                'adapter_name' => 'MySQLWDE',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\Changes\\Controller',
@@ -335,7 +335,7 @@ return array(
                 'resource_class' => 'wde\\V2\\Rest\\Changes\\ChangesResource',
             ),
             'wde\\V2\\Rest\\EntriesNdx\\EntriesNdxResource' => array(
-                'adapter_name' => 'MySQLWDETest',
+                'adapter_name' => 'MySQLWDE',
                 'table_name' => 'unused',
                 'hydrator_name' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
                 'controller_service_name' => 'wde\\V2\\Rest\\EntriesNdx\\Controller',

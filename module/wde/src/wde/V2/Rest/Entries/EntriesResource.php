@@ -54,15 +54,20 @@ class EntriesResource extends AccessCheckingTSResource {
                     }
                     if (isset($data['txt'])) {
                       //XPath contains txt
-                      $filter->AND->equalTo("$ndxTable.txt", $data['txt']);
+                      $filter->AND->equalTo("$ndxTable.txt", str_replace('*', '%', $data['txt']));
                     } else { 
                       //XPath exists 
                     }
                     break;
                 case 'txt':
-                    $value = str_replace('*', '%', $value);
                     if (!isset($data['xpath'])) {
                         //search for every occurence as text regardless of the xpath
+                        $value = str_replace('*', '%', $value);
+                        $ndxTable = $this->realTableName . '_ndx';
+                        $join = array();
+                        $join['tableName'] = "$ndxTable";
+                        $join['onExpression'] = "$this->realTableName.id = $ndxTable.id";
+                        $join['groupBy'] = "$this->realTableName.id";
                         $filter->like("$ndxTable.txt", "$value"); 
                     }
                     // processed above

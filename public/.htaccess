@@ -23,8 +23,8 @@ RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
 # php_value xdebug.idekey netbeans-xdebug
 # php_flag xdebug.remote_autostart on
 
-# If turned on a cachegrind file is written to a place in /tmp (see xdebug's
-# main config
+# If turned on a cachegrind file is written to /tmp/phpprofile
 
 # php_flag xdebug.profiler_enable on
+# php_value xdebug.profiler_output_dir /tmp/phpprofile
 # php_value xdebug.profiler_output_name %t-%H-%R-cachegrind.out.%p

@@ -13,6 +13,9 @@ class Module implements ApigilityProviderInterface
     public function getAutoloaderConfig()
     {
         return array(
+            'Zend\Loader\ClassMapAutoloader' => array(
+                __DIR__ . '/../../autoload_classmap.php',
+            ),
             'ZF\Apigility\Autoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__,

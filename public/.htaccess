@@ -14,3 +14,17 @@ RewriteRule ^.*$ - [NC,L]
 RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
 RewriteRule ^(.*) - [E=BASE:%1]
 RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
+
+# Can be used with ssh or putty. Do a remote port forwarding for
+# port 9000.
+
+# php_flag xdebug.remote_enable on
+# php_value xdebug.remote_port 9000
+# php_value xdebug.idekey netbeans-xdebug
+# php_flag xdebug.remote_autostart on
+
+# If turned on a cachegrind file is written to a place in /tmp (see xdebug's
+# main config
+
+# php_flag xdebug.profiler_enable on
+# php_value xdebug.profiler_output_name %t-%H-%R-cachegrind.out.%p

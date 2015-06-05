@@ -101,7 +101,7 @@ class AccessCheckingTSResource extends TableSwitchingResource {
     
     public function patchList($data) {
         if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
-        if (true == $isNoAdmin = $this->checkHasNoAdminRights()) { return $isNoAdmin; } // is an ApiProblem
+        if (true == $canNotWrite = $this->checkHasNoRightToWrite()) { return $canNotWrite; } // is an ApiProblem
         return parent::patchList($data);
     }
 

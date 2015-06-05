@@ -26,19 +26,29 @@ class EntriesNdxResource extends AccessCheckingTSResource {
     }
     
     public function patchList($data) {
-        $entry_id = $data[0]['id'];
+        $entry_id = (int)$this->getEvent()->getRouteParam('entries_id');
+        $check_locks_for_ids = array();
         foreach ($data as $ndx_entry) {
-           if ($ndx_entry['id'] !== $entry_id) {
-               return new ApiProblem(412, "You cannot set more than one set of ndx data at once!");
-           } 
+            if ($entry_id === 0) {
+                if (!in_array($ndx_entry['id'], $check_locks_for_ids)) {
+                    $check_locks_for_ids[] = $ndx_entry['id'];
+                }
+            } else {
+                if ($ndx_entry['id'] !== $entry_id) {
+                    return new ApiProblem(412, "You cannot set more than one set of ndx data at once! Consider entries/0.");
+                }
+                $check_locks_for_ids[] = $entry_id;
+            }
         }
         if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
         $masterResourceTable = $this->switchTable((clone $this->table), $this->mainTableName);
         // Bypass all access checking.
         $masterResourceHandler = new DbConnectedResource($masterResourceTable, 'id', 'Zend\Paginator\Paginator');
-        $masterResource = $masterResourceHandler->fetch($entry_id);
-        if ($masterResource['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username']) {
-            return new ApiProblem(409, "Conflict, you don't own the lock!");
+        foreach ($check_locks_for_ids as $id) {
+            $masterResource = $masterResourceHandler->fetch($id);
+            if ($masterResource['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username']) {
+                return new ApiProblem(409, "Conflict, you don't own the lock!");
+            }
         }
         return parent::patchList($data);
     }

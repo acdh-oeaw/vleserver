@@ -50,6 +50,7 @@ class TableSwitchingResource extends DbConnectedResource {
     }
     
     public function patchList($data) {
+        $this->table->getAdapter()->getDriver()->getConnection()->beginTransaction();
         foreach ($data as $part) {
             $dataItem = $part->getArrayCopy();
             $id = $dataItem["id"];
@@ -61,6 +62,7 @@ class TableSwitchingResource extends DbConnectedResource {
 //                return $singleRes;
 //            }
         }
+        $this->table->getAdapter()->getDriver()->getConnection()->commit();
         return $this->fetchAll();
     }
     

@@ -181,6 +181,41 @@ class EntriesResource extends AccessCheckingTSResource {
         $this->doCopyOnWrite = true;
         return $ret;
     }
+       
+    public function patchList($data) {
+        $this->table->getAdapter()->getDriver()->getConnection()->beginTransaction();
+        $patchingExisting = false;
+        foreach ($data as $part) {
+            try { $current = $this->fetch($part['id']); }
+            catch (\Exception $e) {                
+                if (!$patchingExisting && 
+                    ($e->getCode() === 404)) {
+                    $this->table->getAdapter()->getDriver()->getConnection()->commit();
+                    // try insert, which super class does.
+                    return parent::patchList($data);
+                } else { throw $e; };
+            }
+            if ($current instanceof ApiProblem) {return $current;}
+            $patchingExisting = true;
+            if ($part['locked'] !== '') {
+                $part['locked'] = $this->getIdentity()->getAuthenticationIdentity()['username'];
+            }
+            if (($current['locked'] === '') && ($part['locked'] === '')) {
+                return new ApiProblem(412, "The entry isn't locked!");
+            }
+            if ($current['locked'] !== $this->getIdentity()->getAuthenticationIdentity()['username'] &&
+                !($this->isAdmin() && ($part['locked'] === ''))) {
+                //Allow mass locking for anyone. Without even admins would need a lock.
+                if (!($current['locked'] === ''))
+                    return new ApiProblem(409, "Conflict, you don't own the lock!");
+            }
+            $dataItem = $part->getArrayCopy();
+            unset($dataItem["id"]);
+            $this->table->update($dataItem, array('id' => $part['id']));
+        }
+        $this->table->getAdapter()->getDriver()->getConnection()->commit();
+        return $this->fetchAll();
+    }
     
     public function deleteList($data) {
         $data["id"] = 699;

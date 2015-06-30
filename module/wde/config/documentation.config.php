@@ -352,7 +352,7 @@ Definitions:
                 'response' => null,
             ),
             'PATCH' => array(
-                'description' => 'Create or change all xpath => text entries for the entry_id specified in the path.',
+                'description' => 'Create or change all xpath => text entries for the entry_id specified in the path. With the special path entries/0/entries_ndx bulk changes and inserts can be achieved.',
                 'request' => '{
    "id": "The id of the entry this XPath belongs to",
    "xpath": "An XPath (although with - as the separator) within an entry.",
@@ -390,7 +390,7 @@ Definitions:
         'collection' => array(
             'GET' => array(
                 'description' => 'Get a list of entries.
-Limiting the query: TODO: to be implemented.
+Limiting the query:
 <ul>
 <li>Query parameter "lem": limit using the lemma column. May contain * jokers.</li>
 <li>Query parameter "sid": limit using the sid column</li>
@@ -472,6 +472,55 @@ Notes on paging:
                 'description' => 'Warnung! Dangerous! Deletes every entry except the system entries < 699 from the dictionary.',
                 'request' => null,
                 'response' => null,
+            ),
+            'PATCH' => array(
+                'description' => 'Create a set of Entries or change them in bulk (e. g. lock or unlock many entries).',
+                'request' => '{
+   "id": "The automatically generated id.",
+   "sid": "A string id. Ought to be unique. Should not contain any Unicode characters.",
+   "lemma": "The lemma of the entry. Probably contains Unicode characters.",
+   "status": "Status of the entry. E. g. released.",
+   "locked": "The user that currently edits the entry.",
+   "type": "Type of the entry. For quickly limiting searches. E. g. lemma, example, multi_word_unit.",
+   "entry": "The entry in the dictionary. A TEI XML snippet (or a whole document)."
+}',
+                'response' => '{
+   "_links": {
+       "self": {
+           "href": "/dicts/:dict_name/entries"
+       },
+       "first": {
+           "href": "/dicts/:dict_name/entries?page={page}"
+       },
+       "prev": {
+           "href": "/dicts/:dict_name/entries?page={page}"
+       },
+       "next": {
+           "href": "/dicts/:dict_name/entries?page={page}"
+       },
+       "last": {
+           "href": "/dicts/:dict_name/entries?page={page}"
+       }
+   }
+   "_embedded": {
+       "entries": [
+           {
+               "_links": {
+                   "self": {
+                       "href": "/dicts/:dict_name/entries[/:entries_id]"
+                   }
+               }
+              "id": "The automatically generated id.",
+              "sid": "A string id. Ought to be unique. Should not contain any Unicode characters.",
+              "lemma": "The lemma of the entry. Probably contains Unicode characters.",
+              "status": "Status of the entry. E. g. released.",
+              "locked": "The user that currently edits the entry.",
+              "type": "Type of the entry. For quickly limiting searches. E. g. lemma, example, multi_word_unit.",
+              "entry": "The entry in the dictionary. A TEI XML snippet (or a whole document)."
+           }
+       ]
+   }
+}',
             ),
         ),
         'entity' => array(

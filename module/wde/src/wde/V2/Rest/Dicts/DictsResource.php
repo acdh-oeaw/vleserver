@@ -93,9 +93,10 @@ class DictsResource extends AbstractResourceListener {
         if (in_array('dict_users', $tablesWithAuth)) {
             $tablesWithAuth = array();
             foreach ($allTableNames as $tableName) {
-                if (strrpos($tableName, '_cow', -4) ||
+                if (strlen($tableName) > 4 && 
+                   (strrpos($tableName, '_cow', -4) ||
                     strrpos($tableName, '_ndx', -4) ||
-                    strrpos($tableName, '_lck', -4) ) {
+                    strrpos($tableName, '_lck', -4) )) {
                     continue;
                 }
                 array_push($tablesWithAuth, $tableName);
@@ -175,6 +176,8 @@ class DictsResource extends AbstractResourceListener {
             if ($dictUsersTable->insert(array('id' => 10, 'entry' => 'xslt')) !== 1) 
             { return new ApiProblem(500, 'Unable to initalize dictionary (xslt).'); }
             if ($dictUsersTable->insert(array('id' => 20, 'entry' => 'schema')) !== 1) 
+            { return new ApiProblem(500, 'Unable to initalize dictionary (schema).'); }            
+            if ($dictUsersTable->insert(array('id' => 699, 'entry' => 'last reserved')) !== 1) 
             { return new ApiProblem(500, 'Unable to initalize dictionary (schema).'); }
             
             switch ($conn->getDriver()->getName()) {

@@ -67,7 +67,9 @@ class DictsAuthHttpAdapterFactory implements FactoryInterface
             try {
                 $dictsDictUsersBasicAuth = new DictsDictUsersBasicAuth($adapter);
                 $httpAdapter->setBasicResolver($dictsDictUsersBasicAuth);
-            } catch (\Exception $e) {/* actually \Zend\Db\Adapter\Exception\ErrorException due to db access problems*/}
+            } catch (\Exception $e) {/* actually \Zend\Db\Adapter\Exception\ErrorException due to db access problems*/
+                \error_log($e->getMessage());
+            }
         }
 
 //        if (in_array('digest', $httpConfig['accept_schemes']) && isset($httpConfig['htdigest'])) {

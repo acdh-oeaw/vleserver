@@ -89,9 +89,9 @@ class EntriesResource extends AccessCheckingTSResource {
             }
         }
         if ($explicitPageSize !== null && $explicitPageSize <= 10) {
-            $adapter = new LimitedColumnTableGateway($this->table, array(), $filter);
+            $adapter = new LimitedColumnTableGateway($this->table, array(), $filter, array('id ASC'));
         } else {
-            $adapter = new LimitedColumnTableGateway($this->table, array('id', 'sid', 'lemma', 'status', 'locked', 'type'), $filter);
+            $adapter = new LimitedColumnTableGateway($this->table, array('id', 'sid', 'lemma', 'status', 'locked', 'type'), $filter, array('id ASC'));
         }
         if (isset($join)) {
             $adapter->join($join['tableName'], $join['onExpression'])

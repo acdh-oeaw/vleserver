@@ -32,10 +32,12 @@ class EntriesResource extends AccessCheckingTSResource {
         $explicitPageSize = $this->getEvent()->getRequest()->getQuery('pageSize');
         $filter = new Where();
         $join = null;
+        $order = array('id ASC');
         foreach ($data as $key=>$value) {
             switch ($key) {
                 case 'sid':
                     $filter->equalTo('sid', $value);
+                    $order = array();
                     break;
                 case 'idRange':
                     $bounds = explode('-', $value);
@@ -46,6 +48,7 @@ class EntriesResource extends AccessCheckingTSResource {
                     break;
                 case 'lem':
                     $filter->like('lemma', $value);
+                    $order = array('lemma ASC');
                     break;
                 case 'xpath':
                     $value = str_replace('*', '%', $value);
@@ -70,6 +73,7 @@ class EntriesResource extends AccessCheckingTSResource {
                     } else { 
                       //XPath exists 
                     }
+                    $order = array('lemma ASC');
                     break;
                 case 'txt':
                     if (!isset($data['xpath'])) {
@@ -82,6 +86,7 @@ class EntriesResource extends AccessCheckingTSResource {
                         $join['groupBy'] = "$this->realTableName.id";
                         $filter->like("$ndxTable.txt", "$value");
                         $filter->OR->like("$ndxTable.txt", $this->charlyEncode($value));
+                        $order = array('lemma ASC');
                     }
                     // processed above
                     break;
@@ -89,9 +94,9 @@ class EntriesResource extends AccessCheckingTSResource {
             }
         }
         if ($explicitPageSize !== null && $explicitPageSize <= 10) {
-            $adapter = new LimitedColumnTableGateway($this->table, array(), $filter, array('id ASC'));
+            $adapter = new LimitedColumnTableGateway($this->table, array(), $filter, $order);
         } else {
-            $adapter = new LimitedColumnTableGateway($this->table, array('id', 'sid', 'lemma', 'status', 'locked', 'type'), $filter, array('id ASC'));
+            $adapter = new LimitedColumnTableGateway($this->table, array('id', 'sid', 'lemma', 'status', 'locked', 'type'), $filter, $order);
         }
         if (isset($join)) {
             $adapter->join($join['tableName'], $join['onExpression'])

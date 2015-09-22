@@ -93,9 +93,10 @@ class DictsResource extends AbstractResourceListener {
         if (in_array('dict_users', $tablesWithAuth)) {
             $tablesWithAuth = array();
             foreach ($allTableNames as $tableName) {
-                if (strrpos($tableName, '_cow', -4) ||
+                if (strlen($tableName) > 4 && 
+                   (strrpos($tableName, '_cow', -4) ||
                     strrpos($tableName, '_ndx', -4) ||
-                    strrpos($tableName, '_lck', -4) ) {
+                    strrpos($tableName, '_lck', -4) )) {
                     continue;
                 }
                 array_push($tablesWithAuth, $tableName);

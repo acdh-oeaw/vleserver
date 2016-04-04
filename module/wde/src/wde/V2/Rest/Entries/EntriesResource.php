@@ -51,6 +51,10 @@ class EntriesResource extends AccessCheckingTSResource {
                     $order = array('lemma ASC');
                     break;
                 case 'xpath':
+                    if (strpos($value, '//') === 0) {
+                        $value = $this->xpath2NdxSqlLike($value, $data);
+                        if ($value instanceof ApiProblem) {return $value;}
+                    }
                     $value = str_replace('*', '%', $value);
                     $ndxTable = $this->realTableName . '_ndx';
                     $join = array();
@@ -103,6 +107,67 @@ class EntriesResource extends AccessCheckingTSResource {
                     ->group($join['groupBy']);
         }      
         return new EntriesCollection($adapter);
+    }
+    
+    private function xpath2NdxSqlLike($value, &$data) {
+        $functionPredicateSearch = '~\[(?<relation>[-a-z]+)\((?<node>[^,])+,\s*"(?<term>.+)"\)\]~';
+        $equalsPredicateSearch = '~\[?<node>([^=])+\s*"(?<term>.+)"\]~';
+        $value = str_replace('//', '%', $value);
+        if (preg_match('~\[.+\]$~', $value)) {
+            $this->getAndRemoveSearchTerm($value, $data);
+        }
+        $value = str_replace('%text()', '', $value);
+        $value .= '%';
+        $this->splitOr($value);
+        return $value;
+    }
+    
+    private function getAndRemoveSearchTerm(&$value, &$data) {
+        try {
+            // find query txt
+            $search = array();
+            if (preg_match_all($functionPredicateSearch, $value, $search, PREG_SET_ORDER)) {
+                $search = end($search);
+                $value = preg_replace($functionPredicateSearch, '', $value);
+                switch ($search['relation']) {
+                    case "starts-with":
+                        $data['txt'] = $search['term'].'*';
+                        break;
+                    case "contains":
+                        $data['txt'] ='*'. $search['term'].'*';
+                        break;
+                    case "ends-with":
+                        $data['txt'] ='*'. $search['term'];
+                        break;
+                    default: throw new \Exception('Can\'t create SQL from XPath! Check implementation.'); 
+                }
+            } elseif (preg_match_all($equalsPredicateSearch, $value, $search, PREG_SET_ORDER)) {
+                $search = end($search);
+                $value = preg_replace($equalsPredicateSearch, '', $value);
+                $data['txt'] = $search['term'];
+            } else {
+                $this->xpath2SQLFailed();
+            }
+        } catch (\Exception $exc) {
+            return new ApiProblem('501', $exc);
+        }       
+    }
+
+    private function splitOr(&$value) {
+        $findOr = '(?<firstPred>.+)\s+or\s+(?<lastPred>[^\]]+)';
+        $findOrInPred = '~^(?<before>[^[]+\[)'.$findOr.'(?<after>.*)$~';
+        $findOr = '~'.$findOr.'~';
+        $parts = array();
+        if (preg_match($findOrInPred, $value, $parts)){
+            $predParts = $parts;
+            while(preg_match($findOr, $predParts['firstPred'], $predParts)) {
+                $this->xpath2SQLFailed();
+            }
+        }
+    }
+    
+    private function xpath2SQLFailed() {
+        throw new \Exception('Can\'t create SQL from XPath! Check implementation.');   
     }
     
     public function fetch($id) {

@@ -32,6 +32,7 @@ class XPath2NdxSqlLikeInterpreter {
             }
             $this->value = str_replace('%text()', '', $this->value);
             $this->value .= '%';
+            $this->value = str_replace('\'', '"', $this->value);
             $this->splitOrAndAllowAnyAttrPredOrder();
         } catch (\Exception $exc) {
             return new ApiProblem('501', $exc);

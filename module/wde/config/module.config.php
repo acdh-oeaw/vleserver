@@ -683,6 +683,8 @@ return array(
                 'validators' => array(),
                 'description' => 'The id of the entry this XPath belongs to',
                 'error_message' => 'Has to be an integer.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
             ),
             1 => array(
                 'name' => 'xpath',
@@ -690,6 +692,8 @@ return array(
                 'filters' => array(),
                 'validators' => array(),
                 'description' => 'An XPath (although with - as the separator) within an entry.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
             ),
             2 => array(
                 'name' => 'txt',
@@ -697,6 +701,8 @@ return array(
                 'filters' => array(),
                 'validators' => array(),
                 'description' => 'The text that will be returned if this XPath is selected using an XML tool.',
+                'allow_empty' => true,
+                'continue_if_empty' => false,
             ),
         ),
     ),

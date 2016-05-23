@@ -389,7 +389,7 @@ return array(
                 'required' => true,
                 'filters' => array(
                     0 => array(
-                        'name' => 'Zend\\Filter\\Int',
+                        'name' => 'Zend\\Filter\\ToInt',
                         'options' => array(),
                     ),
                 ),
@@ -547,7 +547,7 @@ return array(
                 'required' => false,
                 'filters' => array(
                     0 => array(
-                        'name' => 'Zend\\Filter\\Int',
+                        'name' => 'Zend\\Filter\\ToInt',
                         'options' => array(),
                     ),
                 ),
@@ -676,7 +676,7 @@ return array(
                 'required' => true,
                 'filters' => array(
                     0 => array(
-                        'name' => 'Zend\\Filter\\Int',
+                        'name' => 'Zend\\Filter\\ToInt',
                         'options' => array(),
                     ),
                 ),

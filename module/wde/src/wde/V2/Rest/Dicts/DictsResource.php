@@ -294,6 +294,7 @@ DELIMITER ;";
 //                            "`id` int(11)," .
 //                            "`xpath` char(255) default NULL," .
 //                            "`txt` text," .
+//                            "`weight` int," .
 //                            "KEY  (`id`)," .
 //                            "KEY `xpath_ndx` (`xpath`)," .
 //                            "FULLTEXT KEY `txt_ndx` (`txt`)" .
@@ -301,6 +302,7 @@ DELIMITER ;";
         $ndx_table->addColumn('id', 'integer', array('notnull' => true));
         $ndx_table->addColumn('xpath', 'string', array('length' => 255, 'notnull' => true));
         $ndx_table->addColumn('txt', 'text', array('notnull' => true));
+        $ndx_table->addColumn('weight', 'integer', array('default' => 0));
         // Indices might need some serious rethinking.
         $ndx_table->addIndex(array('id'));
         $ndx_table->addIndex(array('xpath'));

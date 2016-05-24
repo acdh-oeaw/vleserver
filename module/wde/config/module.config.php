@@ -704,6 +704,20 @@ return array(
                 'allow_empty' => true,
                 'continue_if_empty' => false,
             ),
+            3 => array(
+                'required' => false,
+                'validators' => array(),
+                'filters' => array(
+                    0 => array(
+                        'name' => 'Zend\\Filter\\ToInt',
+                        'options' => array(),
+                    ),
+                ),
+                'name' => 'weight',
+                'allow_empty' => true,
+                'continue_if_empty' => true,
+                'description' => 'Some integer value by wihch an important occurence of a word can be destinguished from a less important one.',
+            ),
         ),
     ),
     'zf-mvc-auth' => array(

@@ -245,11 +245,29 @@ DELIMITER ;";
         //This should be extendable to SQL Server 2012+, previous versions don't support sequences.
         $table->addColumn('id', 'integer', array('autoincrement' => true, 'notnull' => true));
         $table->addColumn('sid', 'string', array('length' => 255));
-        $table->addColumn('lemma', 'string', array('length' => 255));
-        $table->addColumn('status', 'string', array('length' => 255));
+        $table->addColumn('lemma', 'string', array(
+            'length' => 255,
+            'customSchemaOptions' => array(
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_bin',
+                ),
+            ));
+        $table->addColumn('status', 'string', array(
+            'length' => 255,
+            'customSchemaOptions' => array(
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_bin',
+                ),
+            ));
         $table->addColumn('locked', 'string', array('length' => 255));
         $table->addColumn('type', 'string', array('length' => 255));
-        $table->addColumn('entry', 'text', array('length' => pow(2, 23)));
+        $table->addColumn('entry', 'text', array(
+            'length' => pow(2, 23),
+            'customSchemaOptions' => array(
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_bin',
+                ),
+            ));
         $table->setPrimaryKey(array('id'));
         // Indices might need some serious rethinking.
         $table->addIndex(array('sid'));
@@ -261,6 +279,8 @@ DELIMITER ;";
 //         $type = $this->getCreateIndexSQLFlags($index);
         $table->getIndex('entry_fulltext')->addFlag('fulltext');
         $table->addOption('engine', 'MyISAM');
+        $table->addOption('charset', 'utf8mb4');
+        $table->addOption('collate', 'utf8mb4_bin');
 
 // What exactly uses _lck? Charly says unused.
         $lck_table = $schema->createTable($data->name . '_lck');
@@ -279,7 +299,10 @@ DELIMITER ;";
 //        $lck_table->addIndex(array('resp'));
 //        $lck_table->addIndex(array('dt'));
 //        $lck_table->addOption('engine', 'MyISAM');
-        $lck_table->addColumn('key', 'integer', array('autoincrement' => true, 'notnull' => true));
+        $lck_table->addColumn('key', 'integer', array(
+            'autoincrement' => true,
+            'notnull' => true,
+            ));
         $lck_table->addColumn('id', 'integer');
         $lck_table->addColumn('user', 'string', array('length' => 100));
         $lck_table->addColumn('at', 'datetime', array('default' => 'CURRENT_TIMESTAMP'));
@@ -288,6 +311,8 @@ DELIMITER ;";
         $lck_table->addIndex(array('user'));
         $lck_table->addIndex(array('id'));
         $lck_table->addOption('engine', 'InnoDB');
+        $lck_table->addOption('charset', 'utf8mb4');
+        $lck_table->addOption('collate', 'utf8mb4_bin');
 
         $ndx_table = $schema->createTable($data->name . '_ndx');
 //            $mysql = "CREATE TABLE IF NOT EXISTS `" . $data->name . "_ndx` (" .
@@ -301,7 +326,13 @@ DELIMITER ;";
 //                            ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=770";
         $ndx_table->addColumn('id', 'integer', array('notnull' => true));
         $ndx_table->addColumn('xpath', 'string', array('length' => 255, 'notnull' => true));
-        $ndx_table->addColumn('txt', 'text', array('notnull' => true));
+        $ndx_table->addColumn('txt', 'text', array(
+            'notnull' => true,
+            'customSchemaOptions' => array(
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_bin',
+                ),
+            ));
         $ndx_table->addColumn('weight', 'integer', array('default' => 0));
         // Indices might need some serious rethinking.
         $ndx_table->addIndex(array('id'));
@@ -310,6 +341,8 @@ DELIMITER ;";
 // needs patched getIndexDeclarationSQL in Doctrine\DBAL\Platforms\AbstractPlatform line 1904
         $ndx_table->getIndex('txt_fulltext')->addFlag('fulltext');
         $ndx_table->addOption('engine', 'MyISAM');
+        $ndx_table->addOption('charset', 'utf8mb4');
+        $ndx_table->addOption('collate', 'utf8mb4_bin');
 
         $cow_table = $schema->createTable($data->name . '_cow');
 //            $mysql = "CREATE TABLE IF NOT EXISTS `_cow` (".
@@ -325,11 +358,22 @@ DELIMITER ;";
         $cow_table->addColumn('key', 'integer', array('autoincrement' => true, 'notnull' => true));
         $cow_table->addColumn('id', 'integer');
         $cow_table->addColumn('sid', 'string', array('length' => 255));
-        $cow_table->addColumn('lemma', 'string', array('length' => 255));
+        $cow_table->addColumn('lemma', 'string', array(
+            'length' => 255,
+            'customSchemaOptions' => array(
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_bin',
+                ),
+            ));
         $cow_table->addColumn('at', 'datetime', array('default' => 'CURRENT_TIMESTAMP'));
         $cow_table->getColumn('at')->setPlatformOption('version', true);
         $cow_table->addColumn('user', 'string', array('length' => 255));
-        $cow_table->addColumn('entry_before', 'text');
+        $cow_table->addColumn('entry_before', 'text', array(
+            'customSchemaOptions' => array(
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_bin',
+                ),
+            ));
         $cow_table->setPrimaryKey(array('key'));
         $cow_table->addIndex(array('user'));
         $cow_table->addIndex(array('id'));
@@ -337,6 +381,8 @@ DELIMITER ;";
 // needs patched getIndexDeclarationSQL in Doctrine\DBAL\Platforms\AbstractPlatform line 1904
         $cow_table->getIndex('entry_before_fulltext')->addFlag('fulltext');
         $cow_table->addOption('engine', 'MyISAM');
+        $cow_table->addOption('charset', 'utf8mb4');
+        $cow_table->addOption('collate', 'utf8mb4_bin');
 
         return $schema;
     }

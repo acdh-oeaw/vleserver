@@ -1,0 +1,10 @@
+<?php
+if ($this->type === 'apiList') {
+    echo $this->render('doc/api-list', $this->vars());
+}
+if ($this->type === 'api') {
+    echo $this->render('doc/api', array('api' => $this->documentation));
+}
+if ($this->type === 'service') {
+    echo $this->render('doc/service', array('service' => $this->documentation));
+}

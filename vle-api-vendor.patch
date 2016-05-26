@@ -1,0 +1,24 @@
+diff -urN a/vendor/doctrine/dbal/lib/Doctrine/DBAL/Platforms/AbstractPlatform.php b/vendor/doctrine/dbal/lib/Doctrine/DBAL/Platforms/AbstractPlatform.php
+--- a/vendor/doctrine/dbal/lib/Doctrine/DBAL/Platforms/AbstractPlatform.php     2014-09-15 13:44:29.000000000 +0200
++++ b/vendor/doctrine/dbal/lib/Doctrine/DBAL/Platforms/AbstractPlatform.php     2015-02-18 17:03:07.621832873 +0100
+@@ -1901,7 +1901,7 @@
+      */
+     public function getIndexDeclarationSQL($name, Index $index)
+     {
+-        $type = '';
++        $type = $this->getCreateIndexSQLFlags($index);
+
+         if ($index->isUnique()) {
+             $type = 'UNIQUE ';
+diff -urN a/vendor/zfcampus/zf-apigility-admin/Module.php b/vendor/zfcampus/zf-apigility-admin/Module.php
+--- a/vendor/zfcampus/zf-apigility-admin/Module.php     2015-02-18 17:10:48.989847575 +0100
++++ b/vendor/zfcampus/zf-apigility-admin/Module.php     2014-10-09 13:56:16.355543798 +0200
+@@ -736,7 +736,7 @@
+
+     protected function getServiceType($service)
+     {
+-        if (strstr($service, '\\Rest\\')) {
++        if (strstr($service, '\\Rest\\') || strstr($service, '-Rest-')) {
+             return 'rest';
+         }
+         return 'rpc';

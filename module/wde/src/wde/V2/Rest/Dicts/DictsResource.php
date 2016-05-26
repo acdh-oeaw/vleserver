@@ -141,7 +141,8 @@ class DictsResource extends AbstractResourceListener {
             return new ApiProblem(409, 'Dictionary already exists');
         } else if ($data->name === 'dict_users') {
             $conn = $this->getDBALConnection();
-            $query = $this->getUserTableSchema()->toSql($conn->getDatabasePlatform());
+            $DBALPlatform = $conn->getDatabasePlatform();
+            $query = $this->getUserTableSchema()->toSql($DBALPlatform);
             
             $this->sql->getAdapter()->query($query[0],
                     \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);
@@ -210,15 +211,21 @@ DELIMITER ;";
     /**  @return \Doctrine\DBAL\Connection */
     private function getDBALConnection() {
             // Hack: works with mysqli and pdo_mysql
-            $driver = $this->sql->getAdapter()->getPlatform()->getName();
-            $driverFramework = explode('\\', get_class($this->sql->getAdapter()->getDriver()));
+            $adapter = $this->sql->getAdapter();
+            $driverFramework = explode('\\', get_class($adapter->getDriver()));
             $driverFramework = strtolower($driverFramework[count($driverFramework) - 1]);
             if ($driverFramework === 'pdo') {
-                $driver = 'pdo_' . strtolower($driver);
+                $platformName = $adapter->getPlatform()->getName();
+                $driver = 'pdo_' . strtolower($platformName);
             } else {
                 $driver = $driverFramework;
             } 
-            return DriverManager::getConnection(array('driver' => $driver));        
+            return DriverManager::getConnection(array(
+                'driver' => $driver,
+                // Pass a (mysql) version. Else DBAL would connect to the
+                // db to determine the exact version but it has no credentials.
+                'url' => "$driver://unused/unused?serverVersion=1",
+                ));        
     }
     
     protected function getSchema($data) {

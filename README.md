@@ -1,17 +1,10 @@
-Apigility based Rest Service for WDE
+Apigility based Rest Service for VLE
 ====================================
 
 Requirements
 ------------
   
 Please see the [composer.json](composer.json) file.
-Two fixes are needed to make vendor supplied library stuff work as expected:
-To edit the docs when using apigility 1.0.4(+?) hotfix/226 is needed for rest service doc.
-If not applied all attempts to edit the docs will DELETE them!
-DBAL pretends it's unable to create MySQL Fulltext fields, but it actually can.
-Please apply the vle-api-vendor.patch using
-
-patch -p1 < vle-api-vendor.patch
 
 Installation
 ------------
@@ -21,8 +14,8 @@ Installation
 First, clone the repository:
 
 ```bash
-git clone git@corpus3.aac.ac.at:php_scripts # optionally, specify the directory in which to clone
-cd path/to/install
+git clone https://github.com/acdh-oeaw/vleserver.git # optionally, specify the directory in which to clone
+cd /path/to/install/vleserver
 ```
 
 At this point, you need to use [Composer](https://getcomposer.org/) to install
@@ -37,7 +30,7 @@ composer.phar install
 Once you have the basic installation, you need to put it in development mode:
 
 ```bash
-cd path/to/install
+cd /path/to/install/vleserver
 php public/index.php development enable # put the skeleton in development mode
 ```
 
@@ -53,7 +46,7 @@ Now, fire it up! Do one of the following:
 In the latter case, do the following:
 
 ```bash
-cd path/to/install
+cd /path/to/install/vleserver
 php -S 0.0.0.0:8080 -t public public/index.php
 ```
 

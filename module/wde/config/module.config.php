@@ -389,7 +389,7 @@ return array(
                 'required' => true,
                 'filters' => array(
                     0 => array(
-                        'name' => 'Zend\\Filter\\Int',
+                        'name' => 'Zend\\Filter\\ToInt',
                         'options' => array(),
                     ),
                 ),
@@ -547,7 +547,7 @@ return array(
                 'required' => false,
                 'filters' => array(
                     0 => array(
-                        'name' => 'Zend\\Filter\\Int',
+                        'name' => 'Zend\\Filter\\ToInt',
                         'options' => array(),
                     ),
                 ),
@@ -676,13 +676,15 @@ return array(
                 'required' => true,
                 'filters' => array(
                     0 => array(
-                        'name' => 'Zend\\Filter\\Int',
+                        'name' => 'Zend\\Filter\\ToInt',
                         'options' => array(),
                     ),
                 ),
                 'validators' => array(),
                 'description' => 'The id of the entry this XPath belongs to',
                 'error_message' => 'Has to be an integer.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
             ),
             1 => array(
                 'name' => 'xpath',
@@ -690,6 +692,8 @@ return array(
                 'filters' => array(),
                 'validators' => array(),
                 'description' => 'An XPath (although with - as the separator) within an entry.',
+                'allow_empty' => false,
+                'continue_if_empty' => false,
             ),
             2 => array(
                 'name' => 'txt',
@@ -697,6 +701,22 @@ return array(
                 'filters' => array(),
                 'validators' => array(),
                 'description' => 'The text that will be returned if this XPath is selected using an XML tool.',
+                'allow_empty' => true,
+                'continue_if_empty' => false,
+            ),
+            3 => array(
+                'required' => false,
+                'validators' => array(),
+                'filters' => array(
+                    0 => array(
+                        'name' => 'Zend\\Filter\\ToInt',
+                        'options' => array(),
+                    ),
+                ),
+                'name' => 'weight',
+                'allow_empty' => true,
+                'continue_if_empty' => true,
+                'description' => 'Some integer value by wihch an important occurence of a word can be destinguished from a less important one.',
             ),
         ),
     ),

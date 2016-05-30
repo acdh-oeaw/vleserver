@@ -99,10 +99,10 @@ class AccessCheckingTSResource extends TableSwitchingResource {
         return parent::patch($id, $data);
     }
     
-    public function patchList($data) {
+    public function patchList($data, $delete_by_id_first = false) {
         if (true == $trySwitchFailed = $this->switchToTableInRouteIfExistsAndUserAuthorized()) { return $trySwitchFailed; } // is an ApiProblem
         if (true == $canNotWrite = $this->checkHasNoRightToWrite()) { return $canNotWrite; } // is an ApiProblem
-        return parent::patchList($data);
+        return parent::patchList($data, $delete_by_id_first);
     }
 
     public function delete($id) {          

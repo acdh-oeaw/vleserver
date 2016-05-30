@@ -213,7 +213,7 @@ class EntriesResource extends AccessCheckingTSResource {
         return $ret;
     }
        
-    public function patchList($data) {
+    public function patchList($data, $delete_by_id_first = false) {
         $this->table->getAdapter()->getDriver()->getConnection()->beginTransaction();
         $patchingExisting = false;
         foreach ($data as $part) {
@@ -223,7 +223,7 @@ class EntriesResource extends AccessCheckingTSResource {
                     ($e->getCode() === 404)) {
                     $this->table->getAdapter()->getDriver()->getConnection()->commit();
                     // try insert, which super class does.
-                    return parent::patchList($data);
+                    return parent::patchList($data, $delete_by_id_first);
                 } else { throw $e; };
             }
             if ($current instanceof ApiProblem) {return $current;}

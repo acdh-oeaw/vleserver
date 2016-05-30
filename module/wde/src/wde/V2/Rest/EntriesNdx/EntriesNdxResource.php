@@ -7,7 +7,6 @@ use Zend\Db\TableGateway\TableGatewayInterface as TableGateway;
 use ZF\ApiProblem\ApiProblem;
 use wde\V2\Rest\Common\LimitedColumnTableGateway;
 use ZF\Apigility\DbConnectedResource;
-use wde\V2\Rest\Entries\EntriesEntity;
 use Zend\Db\Sql\Where;
 
 class EntriesNdxResource extends AccessCheckingTSResource {
@@ -25,7 +24,7 @@ class EntriesNdxResource extends AccessCheckingTSResource {
         return new EntriesNdxCollection($adapter);
     }
     
-    public function patchList($data) {
+    public function patchList($data, $delete_by_id_first = true) {
         $entry_id = (int)$this->getEvent()->getRouteParam('entries_id');
         $check_locks_for_ids = array();
         foreach ($data as $ndx_entry) {
@@ -50,7 +49,7 @@ class EntriesNdxResource extends AccessCheckingTSResource {
                 return new ApiProblem(409, "Conflict, you don't own the lock!");
             }
         }
-        return parent::patchList($data);
+        return parent::patchList($data, $delete_by_id_first);
     }
     
     public function deleteList($data) {

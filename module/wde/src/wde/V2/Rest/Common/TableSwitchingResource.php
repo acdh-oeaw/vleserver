@@ -49,8 +49,21 @@ class TableSwitchingResource extends DbConnectedResource {
         return $realTableGateway;
     }
     
-    public function patchList($data) {
+    public function patchList($data, $delete_by_id_first = false) {
         $this->table->getAdapter()->getDriver()->getConnection()->beginTransaction();
+        $ids_to_update = array();
+        if ($delete_by_id_first) {
+            foreach ($data as $part) {
+                if (!in_array($part['id'], $ids_to_update)) {
+                    $ids_to_update[] = $part['id'];
+                }
+            }
+            foreach ($ids_to_update as $id) {
+                $where_id = new Where();
+                $where_id->equalTo('id', $id);
+                $this->table->delete($where_id);
+            }
+        }
         foreach ($data as $part) {
             $dataItem = $part->getArrayCopy();
             $id = $dataItem["id"];

@@ -94,6 +94,12 @@ More docs
 Notes
 -----
 
+### NOTE ON STRANGE BEHAVIOR, NOT ACCEPTING CONFIG CHANGES
+
+* Check that you provided a valid config/autoload/local.php
+* Production setup caches settings in cache/data subdirectory. Please try to remove the contents.
+* Apache may need to be restarted (apachectl graceful at least).
+
 ### NOTE ABOUT USING THE PHP BUILT-IN WEB SERVER
 
 PHP's built-in web server did not start supporting the `PATCH` HTTP method until

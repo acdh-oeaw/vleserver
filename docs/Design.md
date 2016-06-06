@@ -39,3 +39,8 @@ Entries are locked by writing a value to the main table and ia not guarded
 against race conditions. The _lck table is actually unused.
 There is [an idea in the code](module/wde/src/wde/V2/Rest/Dicts/DictsResource.php#L212)
 which could make locking safe even under time critical conditions but it is DB specific.
+
+There is no v1 version of that API
+----------------------------------
+
+Version starts with v2 because there was a much simpler, much more naive v1 implememntations.

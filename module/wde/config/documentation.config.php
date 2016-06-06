@@ -1,4 +1,29 @@
 <?php
+
+/* 
+ * The MIT License
+ *
+ * Copyright 2016 OEAW/ACDH.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 return array(
     'wde\\V2\\Rest\\Dicts\\Controller' => array(
         'collection' => array(
@@ -336,7 +361,8 @@ Definitions:
                }
               "id": "The id of the entry this XPath belongs to",
               "xpath": "An XPath (although with - as the separator) within an entry.",
-              "txt": "The text that will be returned if this XPath is selected using an XML tool."
+              "txt": "The text that will be returned if this XPath is selected using an XML tool or a token of that text.",
+              "weight": "A weight for the text. A token that makes up the whole XPath may be more important than one in a bigger kontext."
            }
        ]
    }
@@ -347,7 +373,8 @@ Definitions:
                 'request' => '{
    "id": "The id of the entry this XPath belongs to",
    "xpath": "An XPath (although with - as the separator) within an entry.",
-   "txt": "The text that will be returned if this XPath is selected using an XML tool."
+   "txt": "The text that will be returned if this XPath is selected using an XML tool or a token of that text.",
+   "weight": "A weight for the text. A token that makes up the whole XPath may be more important than one in a bigger kontext."
 }',
                 'response' => null,
             ),
@@ -356,7 +383,8 @@ Definitions:
                 'request' => '{
    "id": "The id of the entry this XPath belongs to",
    "xpath": "An XPath (although with - as the separator) within an entry.",
-   "txt": "The text that will be returned if this XPath is selected using an XML tool."
+   "txt": "The text that will be returned if this XPath is selected using an XML tool or a token of that text.",
+   "weight": "A weight for the text. A token that makes up the whole XPath may be more important than one in a bigger kontext."
 }',
                 'response' => null,
             ),

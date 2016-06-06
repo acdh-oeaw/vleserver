@@ -16,6 +16,6 @@ class IndexController extends AbstractActionController
         if (class_exists('\ZF\Apigility\Admin\Module', false)) {
           return $this->redirect()->toRoute('zf-apigility/ui');
         }
-        return new ViewModel();
+        return $this->redirect()->toRoute('zf-apigility/documentation');
     }
 }

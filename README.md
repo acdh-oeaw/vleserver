@@ -1,13 +1,22 @@
 Apigility based Rest Service for VLE
 ====================================
 
+This project is a RESTful API service that can be used to store XML documents
+in small parts that share a common ancestor. In practice it is used to store
+TEI documents made up of tei:entry elements. These dictionary like data can
+then be searched using XPath based indexes.
+
+This project is based on the apigility template project.
+
 Requirements
 ------------
   
 Please see the [composer.json](composer.json) file.
 
-Installation
-------------
+Setting up the REST service
+---------------------------
+
+For more instructions also have a look at the [apigility documentation](https://apigility.org/documentation)!
 
 ### Via Git (clone)
 
@@ -34,7 +43,9 @@ cd /path/to/install/vleserver
 php public/index.php development enable # put the skeleton in development mode
 ```
 
-Now, fire it up! Do one of the following:
+### Now, fire it up!
+
+Do one of the following:
 
 - Just create a symbolic link from the web servers htdocs/html directory to
   the `public/` directory. Rename that link e. g. `rest/` or `restttest/`
@@ -53,6 +64,24 @@ php -S 0.0.0.0:8080 -t public public/index.php
 You can then visit the site at http://localhost:8080/ - which will bring up a
 welcome page and the ability to visit the dashboard in order to create and
 inspect your APIs.
+
+Classes
+-------
+
+The classes making up the service can be found in src/v2/wde.
+
+* The RESTful endpoints form a tree structure:
+** At the root there are the dicts. The url dicts is followed by the name of the
+dictionary (e. g. dicts/arz_eng_002). Those names map to a set of database tables.
+** dicts cointain entries and users
+** entries contain entries_ndx and changes
+(like dicts/<name>/entries/<id>/entries_ndx or dicts/<name>/entries/<id>/cahnges)
+* The authentication is done using BASIC HTTP authentication right now. https
+secured connections are actually mandatory because of this. The authentication
+requests are resolved against a special "dictionary" dict_users.
+
+Notes
+-----
 
 ### NOTE ABOUT USING THE PHP BUILT-IN WEB SERVER
 

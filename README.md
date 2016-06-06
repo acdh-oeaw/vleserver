@@ -65,6 +65,11 @@ You can then visit the site at http://localhost:8080/ - which will bring up a
 welcome page and the ability to visit the dashboard in order to create and
 inspect your APIs.
 
+Database schema
+---------------
+
+The [database schema used](module/wde/src/wde/V2/Rest/Dicts/DictsResource.php#L231) can be found in the sources.
+
 Classes
 -------
 
@@ -79,6 +84,12 @@ dictionary (e. g. dicts/arz_eng_002). Those names map to a set of database table
 * The authentication is done using BASIC HTTP authentication right now. https
 secured connections are actually mandatory because of this. The authentication
 requests are resolved against a special "dictionary" dict_users.
+
+More docs
+---------
+
+* [TODO](docs/TODO.md)
+* [Design](docs/Design.md): A document about design decissions.
 
 Notes
 -----

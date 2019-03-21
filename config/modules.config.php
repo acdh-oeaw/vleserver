@@ -24,5 +24,6 @@ return array(
     'ZF\Rest',
     'ZF\Rpc',
     'ZF\Versioning',
-	'wde'
+    'ZF\Apigility\Documentation\Swagger',
+    'wde'
 );
